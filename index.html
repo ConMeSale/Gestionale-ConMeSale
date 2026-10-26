@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Food Cost</title>
+<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Conto Economico</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#faf8f5;--fg:#1f1d1a;--mu:#6e6a63;--card:#fff;--bd:#e3ded6;--ac:#c2410c;--ok:#15803d;--bad:#b91c1c;--warn:#fef3c7;--c1:#2563eb;--c2:#d97706;--c3:#7c3aed}
@@ -115,11 +115,11 @@ table.bpT{min-width:560px}table.bpWide{min-width:1080px}
 <main><div class="tb"><button class="b" onclick="document.body.classList.toggle('sbo')" aria-label="Apri il menu">☰</button><b id="tbT"></b></div><div id="v"></div></main></div>
 <script>
 // NOLOGIN=true: l'app si apre senza password e salva i dati solo su questo dispositivo. Metti false per riattivare login e sincronizzazione.
-const NOLOGIN=true;
-const PROF=(()=>{try{return NOLOGIN?(localStorage.getItem('fcs_prof')||''):''}catch(e){return''}})();
-const IMP=(()=>{try{return JSON.parse(sessionStorage.getItem('fcs_imp')||'null')}catch(e){return null}})(),K=k=>IMP?k+'_i':PROF?k+'_p'+PROF:k;
-const D={"ing": [], "dishes": [], "p": {"useIva": true, "iva": 10, "scarto": 10, "ricarico": 2.5}};let dq='',S=null,view=(()=>{try{return sessionStorage.getItem('fcs_view')||'piatti'}catch(e){return'piatti'}})(),open_=null,q='',onlyMiss=false;
-try{S=JSON.parse(localStorage.getItem(K('fcs1')))}catch(e){}
+const NOLOGIN=false;
+const PROF=(()=>{try{return NOLOGIN?(localStorage.getItem('ce_prof')||''):''}catch(e){return''}})();
+const IMP=(()=>{try{return JSON.parse(sessionStorage.getItem('ce_imp')||'null')}catch(e){return null}})(),K=k=>IMP?k+'_i':PROF?k+'_p'+PROF:k;
+const D={"ing": [], "dishes": [], "p": {"useIva": true, "iva": 10, "scarto": 10, "ricarico": 2.5}};let dq='',S=null,view=(()=>{try{return sessionStorage.getItem('ce_view')||'piatti'}catch(e){return'piatti'}})(),open_=null,q='',onlyMiss=false;
+try{S=JSON.parse(localStorage.getItem(K('ce1')))}catch(e){}
 if(!S||!S.ing)S=JSON.parse(JSON.stringify(D));
 const CATS=[['farina','Farina',4],['acqua','Acqua',1],['olio','Olio',4],['sale','Sale',1],['lievito','Lievito',1],['latte','Latte',1],['uova','Uova',1]];
 S.p=Object.assign({luce:0,dip:0,gas:0,affitto:0,minuti:6,giorni:26,ore:10,acqua:0,spazz:0,altro:0,glovo:0,justeat:0,deliveroo:0,ecom:0,fork:0,extra:0,forkF:0,extraF:0,extraName:'',glovoF:0,justeatF:0,deliverooF:0,ecomF:0,ctel:0,cecom:0,ccomm:0,chaccp:0,ccons:0,cfatt:0,cads:0},S.p);if(!S.rev)S.rev={};
@@ -146,7 +146,7 @@ if(m.type==='comprato'){let p=(+m.price||0)*(S.p.useIva?1+(+m.iva||10)/100:1);re
 let c=0,g=0;impL(m).forEach(l=>{const i=S.ing.find(x=>x.id===l.ing);if(i)c+=uc(i)*(+l.qty||0);g+=+l.qty||0});const n=g/(+m.peso||1);return n>0?c/n:0};
 const pastaC=(fid,g)=>{const f=S.fmt.find(x=>x.id===fid);if(!f||!f.price)return 0;let p=+f.price;if(S.p.useIva)p*=1+(+f.iva||10)/100;return p/1000*(+g||0)};
 const dc=d=>d.cat==='primi'?pastaC(d.pf,d.pg):d.imp==='none'?0:impC(IM(d.imp));
-const save=()=>{try{localStorage.setItem(K('fcs1'),JSON.stringify(S))}catch(e){}syncChanged()};
+const save=()=>{try{localStorage.setItem(K('ce1'),JSON.stringify(S))}catch(e){}syncChanged()};
 const eur=n=>isFinite(n)?n.toLocaleString('it-IT',{style:'currency',currency:'EUR'}):'–';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ing=id=>S.ing.find(x=>x.id===id);
@@ -163,7 +163,7 @@ return{par:totC()/(base+lav()),c,miss,nog,tot,rec:tot*S.p.ricarico,fc:d.sale?bas
 const used=id=>S.dishes.filter(d=>d.lines.some(l=>l.ing===id)).length;
 function syncOre(){const p=S.p;if(!p.oreMode){p.oreMode='g';const o=+p.ore||0;p.oreH=Math.floor(o+1e-9);p.oreMin=Math.min(59,Math.round((o-p.oreH)*60))}const t=(+p.oreH||0)+(+p.oreMin||0)/60,g=+p.giorni||0;p.ore=p.oreMode==='g'?t:g>0?(p.oreMode==='s'?t*52/12:t)/g:0}
 function fmtOre(h){let H=Math.floor(h+1e-9),m=Math.round((h-H)*60);if(m>=60){H++;m=0}return H+' h '+String(m).padStart(2,'0')+' min'}
-function R(){profSync();syncOre();syncSugi();if(view==='trac'){view='haccp';hsub='trac'}if(view==='admin'&&isAdm()&&Date.now()-admAt>20000){admAt=Date.now();admLoad()}save();CH.find(x=>x[0]==='extra')[1]=S.p.extraName||'Altra piattaforma';try{sessionStorage.setItem('fcs_view',view)}catch(e){}
+function R(){profSync();syncOre();syncSugi();if(view==='trac'){view='haccp';hsub='trac'}if(view==='admin'&&isAdm()&&Date.now()-admAt>20000){admAt=Date.now();admLoad()}save();CH.find(x=>x[0]==='extra')[1]=S.p.extraName||'Altra piattaforma';try{sessionStorage.setItem('ce_view',view)}catch(e){}
 document.getElementById('nav').innerHTML=sideNav();
 document.getElementById('v').innerHTML=impBanner()+abbBanner()+(view==='piatti'?pPiatti():view==='haccp'?pHaccp():view==='ing'?pIng():view==='imp'?pImp():view==='rev'?pRev():view==='costi'?pCosti():view==='graf'?pGraf():view==='ce'?pCE():view==='prime'?pPrime():view==='bp'?pBP():TODO[view]?pTodo(view):view==='fmt'?pFmt():view==='fatt'?pFatt():view==='guida'?pGuida():view==='admin'?pAdmin():view==='abb'?pAbb():pPar());if(view==='bp')bpFill();fotoHydrate()}
 function syncSugi(){const ids=new Set();S.dishes.filter(d=>d.cat==='sughi').forEach(d=>{const id='sg_'+d.id;ids.add(id);const x=sInfo(d),pr=isFinite(x.kg)&&x.kg>0?Math.round(x.kg*10000)/10000:null;let i=S.ing.find(z=>z.id===id);if(!i){i={id,unit:'kg',iva:0,auto:true};S.ing.push(i)}i.name=d.name;i.price=pr;i.sugo=d.id;i.auto=true;i.unit='kg'});
@@ -239,9 +239,9 @@ const lotCat=l=>{if(l.kind==='dish'){const d=dish(l.ref);return d?(PC.find(x=>x[
 const scBadge=v=>{const n=dleft(v);if(n===null)return'–';const t=fd(v);return n<0?`<b class="bad">${t} · scaduto</b>`:n<=2?`<span class="w">${t} · ${n===0?'oggi':n+' gg'}</span>`:t};
 // Foto delle etichette: salvate a parte (non nei dati principali) per tenere veloce la sincronizzazione.
 const FOTO={c:{},
-async put(id,d){this.c[id]=d;if(syOn()){const r=await rpc('fc_foto_put',{p_id:id,p_data:d});if(r<0)throw new Error('Foto troppo grande o limite raggiunto.')}else localStorage.setItem('fcs_f_'+id,d)},
-async get(id){if(this.c[id])return this.c[id];let d=null;try{d=syOn()?await rpc('fc_foto_get',{p_id:id}):localStorage.getItem('fcs_f_'+id)}catch(e){}if(d)this.c[id]=d;return d},
-async del(id){delete this.c[id];try{if(syOn())await rpc('fc_foto_del',{p_id:id});else localStorage.removeItem('fcs_f_'+id)}catch(e){}}};
+async put(id,d){this.c[id]=d;if(syOn()){const r=await rpc('fc_foto_put',{p_id:id,p_data:d});if(r<0)throw new Error('Foto troppo grande o limite raggiunto.')}else localStorage.setItem('ce_f_'+id,d)},
+async get(id){if(this.c[id])return this.c[id];let d=null;try{d=syOn()?await rpc('fc_foto_get',{p_id:id}):localStorage.getItem('ce_f_'+id)}catch(e){}if(d)this.c[id]=d;return d},
+async del(id){delete this.c[id];try{if(syOn())await rpc('fc_foto_del',{p_id:id});else localStorage.removeItem('ce_f_'+id)}catch(e){}}};
 const fImg=id=>`<img class="th" data-f="${id}" ${FOTO.c[id]?'src="'+FOTO.c[id]+'"':''} alt="etichetta" onclick="fotoBig('${id}')">`;
 const sImg=id=>`<img class="sg" data-f="${id}" ${FOTO.c[id]?'src="'+FOTO.c[id]+'"':''} alt="firma" onclick="fotoBig('${id}')">`;
 async function pinHash(i,pin){const b=new TextEncoder().encode('fc|'+i+'|'+pin);try{if(window.crypto&&crypto.subtle){const h=await crypto.subtle.digest('SHA-256',b);return[...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}let x=5381;for(const c of b)x=((x<<5)+x+c)>>>0;return'x'+x}
@@ -364,7 +364,7 @@ ${pBackupCard()}
 <div class="card"><b>Fatture e prezzi ingredienti</b><div class="row" style="margin-top:8px"><label><input type="checkbox" ${S.p.noAuto?'':'checked'} onchange="S.p.noAuto=!this.checked;R()">Aggiorna in automatico i prezzi degli ingredienti dalle fatture salvate</label></div><div class="mu">Gli ingredienti aggiornati sono evidenziati in giallo nella scheda Ingredienti, con «Va bene» e «Ripristina». Le voci non riconosciute si abbinano a mano dalla fattura.</div></div>
 <div class="card"><b>IVA, scarto e ricarico</b><div class="row" style="margin-top:8px"><label><input type="checkbox" ${S.p.useIva?'checked':''} onchange="S.p.useIva=this.checked;R()">Calcola i costi con l'IVA di acquisto (si sceglie per ogni ingrediente)</label>${f('scarto','Scarto %',1)}${f('ricarico','Ricarico ×',0.1)}</div>
 <p class="mu">Costo totale = (ingredienti + impasto + lavoro) × (1 + scarto). Prezzo consigliato = costo totale × ricarico. Food cost % = (ingredienti + impasto) / prezzo di vendita. Numero di pareggio = costi mensili / (ingredienti + impasto + lavoro), come nel foglio. I dati restano salvati in questo browser.</p>
-<button class="b" onclick="ask('Ripristinare i dati iniziali? Cancella tutti i dati inseriti, anche sugli altri dispositivi se la sincronizzazione è attiva.',()=>{try{localStorage.removeItem(K('fcs1'))}catch(e){}location.reload()})">Ripristina dati iniziali</button></div>`}
+<button class="b" onclick="ask('Ripristinare i dati iniziali? Cancella tutti i dati inseriti, anche sugli altri dispositivi se la sincronizzazione è attiva.',()=>{try{localStorage.removeItem(K('ce1'))}catch(e){}location.reload()})">Ripristina dati iniziali</button></div>`}
 function setSl(c,k,f,v){IM(curImp).slots[c][k][f]=v;R()}
 function addImp(type){askText('Nome impasto',n=>{const b=S.imps[0];const m={id:'m'+Date.now(),name:n,type,peso:220,mode:'pz',price:null,box:1,slots:{}};CATS.forEach(([c])=>m.slots[c]=b.slots[c].map(s=>({ing:s.ing,qty:0})));S.imps.push(m);curImp=m.id;R()})}
 function delImp(){if(S.imps.length<2)return;ask('Eliminare questo impasto? I piatti che lo usano passeranno al primo impasto.',()=>{S.imps=S.imps.filter(m=>m.id!==curImp);curImp=S.imps[0].id;R()})}
@@ -427,9 +427,9 @@ let nm=0,nf=0;(m.imps||[]).forEach(x=>{if(!S.imps.some(y=>y.id===x.id)){const c=
 (m.fmt||[]).forEach(x=>{if(!S.fmt.some(y=>y.id===x.id)){S.fmt.push(Object.assign({},x));nf++}});
 return{ni,nd,nm,nf,sk}}
 function impReplace(m){S.ing=(m.ing||[]).filter(i=>!i.auto);S.dishes=m.dishes||[];if(m.imps&&m.imps.length)S.imps=m.imps;S.fmt=m.fmt||[];Object.assign(S.p,m.p||{});S.alias={}}
-function impFile(f){if(!f)return;const rd=new FileReader();rd.onerror=()=>note('File non leggibile.');rd.onload=()=>{let j;try{j=JSON.parse(rd.result)}catch(e){return note('Il file non è valido: scegli un file .json creato da Food Cost.')}
-if(!j||(j.tipo!=='foodcost-modello'&&j.tipo!=='foodcost-backup')||!j.data)return note('Questo file non è stato creato da Food Cost.');
-if(j.tipo==='foodcost-backup'){const d=j.data;ask('Sostituire TUTTI i dati di questo account con il backup ('+(d.dishes||[]).length+' piatti, '+(d.ing||[]).length+' ingredienti)? I dati attuali andranno persi.',()=>{S=d;localStorage.setItem(K('fcs1'),JSON.stringify(S));location.reload()});return}
+function impFile(f){if(!f)return;const rd=new FileReader();rd.onerror=()=>note('File non leggibile.');rd.onload=()=>{let j;try{j=JSON.parse(rd.result)}catch(e){return note('Il file non è valido: scegli un file .json creato da Conto Economico.')}
+if(!j||(j.tipo!=='foodcost-modello'&&j.tipo!=='foodcost-backup')||!j.data)return note('Questo file non è stato creato da Conto Economico.');
+if(j.tipo==='foodcost-backup'){const d=j.data;ask('Sostituire TUTTI i dati di questo account con il backup ('+(d.dishes||[]).length+' piatti, '+(d.ing||[]).length+' ingredienti)? I dati attuali andranno persi.',()=>{S=d;localStorage.setItem(K('ce1'),JSON.stringify(S));location.reload()});return}
 const m=j.data,n=(m.dishes||[]).length,ni=(m.ing||[]).filter(i=>!i.auto).length;
 const o=dlg('<b>Importa modello</b><p>Il file contiene <b>'+n+' piatti</b> e <b>'+ni+' ingredienti</b>.</p><p class="mu"><b>Aggiungi</b>: tiene tutto quello che hai già e aggiunge piatti e ingredienti mancanti (ingredienti e piatti con lo stesso nome non si duplicano).<br><b>Sostituisci</b>: cancella piatti, ingredienti, impasti e formati attuali e mette quelli del file. Fatture, HACCP, fatturato e costi mensili non vengono toccati.</p><div class="row"><button class="b" id="im1">Aggiungi</button><button class="b" id="im2">Sostituisci</button><button class="b" id="im3">Annulla</button></div>');
 o.querySelector('#im3').onclick=()=>o.remove();
@@ -619,13 +619,13 @@ if(method===8){if(typeof DecompressionStream==='undefined')throw new Error('zipd
 out.push({name,data})}
 return out}
 async function inboxCheck(){if(!A||sy.inb||IMP)return;sy.inb=true;
-try{let staged=[];try{staged=JSON.parse(localStorage.getItem(K('fcs_taken'))||'[]')}catch(e){}
+try{let staged=[];try{staged=JSON.parse(localStorage.getItem(K('ce_taken'))||'[]')}catch(e){}
 let items=[];try{items=(await rpc('fc_inbox_take',{}))||[]}catch(e){}
-if(items.length){staged=staged.concat(items);try{localStorage.setItem(K('fcs_taken'),JSON.stringify(staged))}catch(e){}}
+if(items.length){staged=staged.concat(items);try{localStorage.setItem(K('ce_taken'),JSON.stringify(staged))}catch(e){}}
 if(staged.length){let ok=0,dup=0,bad=0;
 staged.forEach((it,k)=>{try{parseFattXml(it.xml).forEach(p=>{if(isDup(p)){dup++;return}pushF({id:'f'+Date.now()+'_'+k+'_'+ok,fornitore:p.fornitore,piva:p.piva||'',numero:p.numero,data:p.data,righe:p.righe,totale:p.totale||Math.round(p.righe.reduce((s,r)=>s+(+r.tot||0)*(1+(+r.iva||0)/100),0)*100)/100,file:it.name||'',nuova:true});ok++})}
 catch(e){bad++;pushF({id:'f'+Date.now()+'_e'+k,fornitore:'⚠ File non leggibile',piva:'',numero:it.name||'',data:'',righe:[],totale:0,file:it.name||'',nuova:true,errore:true})}});
-save();try{localStorage.removeItem(K('fcs_taken'))}catch(e){}
+save();try{localStorage.removeItem(K('ce_taken'))}catch(e){}
 fmsg='Arrivate '+ok+' nuove fatture'+(dup?', '+dup+' già presenti':'')+(bad?', '+bad+' non leggibili':'')+'.';
 if(view==='fatt')R()}}catch(e){}
 sy.inb=false}
@@ -762,7 +762,7 @@ if(op)h+=`<div class="sub">${m[3].map(([k,l])=>`<button class="si${view===k?' cu
 h+='<div class="sbSep"></div>'+MENU_B.map(m=>it(...m)).join('')+(ME&&ME.role==='user'?it('abb','Abbonamento','card'):'');
 const nm=S.p.locale||'Il mio locale',ini=nm.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
 document.getElementById('tbT').textContent=vLabel(view);
-return`<div class="sbB"><span class="sbL">🍕</span><div><b>Food Cost</b><div class="sbM">Gestionale ristorazione</div></div></div><div class="sbN">${h}</div>
+return`<div class="sbB"><span class="sbL">🍕</span><div><b>Conto Economico</b><div class="sbM">Gestionale ristorazione</div></div></div><div class="sbN">${h}</div>
 <button class="sbP" onclick="profDlg()" title="Clienti"><span class="av">${esc(ini||'?')}</span><span><b>${esc(nm)}</b><span class="sbM">${syOn()?'Account sincronizzato':'Cambia cliente'}</span></span></button>`}
 function pTodo(k){const[t,d,L]=TODO[k];return`<div class="card"><div class="row" style="margin:0;justify-content:space-between"><b style="font-size:17px">${t}</b><span class="w">In costruzione</span></div><p style="margin:8px 0;max-width:62ch">${d}</p><div class="row" style="margin:0"><span class="mu">Intanto puoi usare:</span>${L.map(([v,l])=>`<button class="b" onclick="navGo('${v}')">${l}</button>`).join('')}</div></div>`}
 function pPrime(){const rows=costsOn(),first=ceFirst(),now=ymd(new Date()).slice(0,7),tgt=+S.p.pcT||62;
@@ -947,17 +947,17 @@ function bpBudget(from,to){const s=bpActive(),t={has:false};if(!s)return t;
  t.name=s.name;return t}
 
 /* ===== Clienti su questo dispositivo ===== */
-function profList(){let L=[];try{L=JSON.parse(localStorage.getItem('fcs_profs')||'[]')}catch(e){}if(!L.some(p=>p.id===''))L.unshift({id:'',name:''});return L}
-function profSave(L){try{localStorage.setItem('fcs_profs',JSON.stringify(L))}catch(e){}}
+function profList(){let L=[];try{L=JSON.parse(localStorage.getItem('ce_profs')||'[]')}catch(e){}if(!L.some(p=>p.id===''))L.unshift({id:'',name:''});return L}
+function profSave(L){try{localStorage.setItem('ce_profs',JSON.stringify(L))}catch(e){}}
 function profSync(){if(!NOLOGIN)return;const L=profList(),me=L.find(p=>p.id===PROF);if(!me)return;if(!S.p.locale&&me.name)S.p.locale=me.name;else if(me.name!==(S.p.locale||'')){me.name=S.p.locale||'';profSave(L)}}
 function profDlg(){if(!NOLOGIN)return locName();const L=profList();
 const o=dlg(`<b>Clienti</b><p class="mu" style="margin:4px 0 8px">Ogni cliente ha i suoi dati separati su questo dispositivo: piatti, incassi, costi, business plan.</p>${L.map((p,i)=>`<div class="row" style="justify-content:space-between;margin:4px 0;padding:6px 0;border-bottom:1px solid var(--bd)"><span>${esc(p.name||'Il mio locale')}${p.id===PROF?' <span class="w">aperto</span>':''}</span><span>${p.id===PROF?'<button class="b" data-a="ren">Rinomina</button>':`<button class="b" data-a="open" data-i="${i}">Apri</button>${p.id?` <button class="x" data-a="del" data-i="${i}" title="Elimina cliente">✕</button>`:''}`}</span></div>`).join('')}<div class="row" style="margin-top:12px"><input id="pn" placeholder="Nome del nuovo cliente" style="flex:1;min-width:160px"><button class="b" id="pa">+ Nuovo cliente</button></div><div class="row" style="margin:0"><button class="b" id="px">Chiudi</button></div>`);
 o.querySelector('#px').onclick=()=>o.remove();
-o.querySelector('#pa').onclick=()=>{const n=o.querySelector('#pn').value.trim();if(!n)return o.querySelector('#pn').focus();const id='c'+Date.now();L.push({id,name:n});profSave(L);save();try{localStorage.setItem('fcs_prof',id)}catch(e){}location.reload()};
+o.querySelector('#pa').onclick=()=>{const n=o.querySelector('#pn').value.trim();if(!n)return o.querySelector('#pn').focus();const id='c'+Date.now();L.push({id,name:n});profSave(L);save();try{localStorage.setItem('ce_prof',id)}catch(e){}location.reload()};
 o.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=b.dataset.a,p=L[+b.dataset.i];
  if(a==='ren'){o.remove();locName();return}
- if(a==='open'){save();try{p.id?localStorage.setItem('fcs_prof',p.id):localStorage.removeItem('fcs_prof')}catch(e){}location.reload();return}
- if(a==='del'){o.remove();ask('Eliminare il cliente «'+(p.name||'Il mio locale')+'» e tutti i suoi dati da questo dispositivo? Non si può annullare.',()=>{['fcs1','fcs_ver','fcs_last','fcs_taken'].forEach(k=>{try{localStorage.removeItem(k+'_p'+p.id)}catch(e){}});profSave(L.filter(x=>x!==p));setTimeout(profDlg,50)})}})}
+ if(a==='open'){save();try{p.id?localStorage.setItem('ce_prof',p.id):localStorage.removeItem('ce_prof')}catch(e){}location.reload();return}
+ if(a==='del'){o.remove();ask('Eliminare il cliente «'+(p.name||'Il mio locale')+'» e tutti i suoi dati da questo dispositivo? Non si può annullare.',()=>{['ce1','ce_ver','ce_last','ce_taken'].forEach(k=>{try{localStorage.removeItem(k+'_p'+p.id)}catch(e){}});profSave(L.filter(x=>x!==p));setTimeout(profDlg,50)})}})}
 /* ===== Conto economico ===== */
 const CE_CAT=[['mp','Materia prima food'],['bev','Bevande'],['cons','Consumabili e pulizia'],['manut','Manutenzioni'],['altro','Altre spese'],['escl','Non contare']];
 let ceF=ymd(new Date()).slice(0,4)+'-01',ceT=ymd(new Date()).slice(0,7),ceC={},ceSup=[];
@@ -1065,16 +1065,16 @@ async function admCall(body){const t=await token();const r=await fetch(base()+'/
 async function admLoad(){try{adm=(await rpc('fc_admin_list',{}))||[];admMsg='';if(isSup()&&!ABB)ABB=(await rpc('fc_abb_get',{}))||{};await pwLoad()}catch(e){if(e.message!=='disattivato')admMsg="Impossibile caricare l'elenco."}if(view==='admin')R()}
 function impBanner(){return IMP?'<div class="card" style="background:var(--warn);position:sticky;top:0;z-index:5"><b>👁 Stai lavorando nell\'account di '+esc(IMP.nome)+'</b><div class="mu">Tutto ciò che inserisci o modifichi viene salvato nei dati di questo ristorante.</div><button class="b" onclick="exitRest()">← Torna al tuo account</button></div>':''}
 async function enterRest(u){const x=admFind(u);try{if(JSON.stringify(S)!==sy.last)await push()}catch(e){}
-['fcs1','fcs_ver','fcs_last','fcs_taken'].forEach(k=>{try{localStorage.removeItem(k+'_i')}catch(e){}});try{sessionStorage.setItem('fcs_imp',JSON.stringify({uid:u,nome:x.nome||x.email}));sessionStorage.setItem('fcs_view','piatti')}catch(e){}location.reload()}
+['ce1','ce_ver','ce_last','ce_taken'].forEach(k=>{try{localStorage.removeItem(k+'_i')}catch(e){}});try{sessionStorage.setItem('ce_imp',JSON.stringify({uid:u,nome:x.nome||x.email}));sessionStorage.setItem('ce_view','piatti')}catch(e){}location.reload()}
 async function exitRest(){try{if(JSON.stringify(S)!==sy.last)await push()}catch(e){}
-['fcs1','fcs_ver','fcs_last','fcs_taken'].forEach(k=>{try{localStorage.removeItem(k+'_i')}catch(e){}});try{sessionStorage.removeItem('fcs_imp');sessionStorage.setItem('fcs_view','admin')}catch(e){}location.reload()}
+['ce1','ce_ver','ce_last','ce_taken'].forEach(k=>{try{localStorage.removeItem(k+'_i')}catch(e){}});try{sessionStorage.removeItem('ce_imp');sessionStorage.setItem('ce_view','admin')}catch(e){}location.reload()}
 let PW={};
 async function pwLoad(){if(!isSup())return;try{const l=(await rpc('fc_admin_pw_list',{}))||[];PW={};l.forEach(r=>PW[r.uid]=r)}catch(e){}}
 async function pwRec(uid,p){if(!uid)return;try{await rpc('fc_admin_pw_set',{p_uid:uid,p_pw:p});PW[uid]={uid,pw:p,at:new Date().toISOString()}}catch(e){}if(view==='admin')R()}
 async function pwVerify(email,p){try{const r=await fetch(base()+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json',apikey:SYNC.key},body:JSON.stringify({email,password:p})});return r.ok}catch(e){return false}}
 function pwShow(u){const x=admFind(u),me=A&&u===A.uid,r=PW[u];const o=dlg('<b>Password · '+esc(x.nome||x.email)+'</b><p class="mu">'+esc(x.email||'')+'</p>'+(r?'<pre style="white-space:pre-wrap;word-break:break-all;font-size:14px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px">'+esc(r.pw)+'</pre><p class="mu">Registrata il '+dt(r.at)+'</p>':'<p class="mu">Nessuna password registrata. Le password già esistenti non si possono leggere (Supabase le conserva cifrate).'+(me?' Scrivi qui la tua password: verrà controllata e registrata.':' Premi <b>Password</b> per impostarne una nuova: da quel momento sarà registrata qui.')+'</p>')+(me?'<input id="mp" style="width:100%;box-sizing:border-box;margin-bottom:8px" placeholder="La tua password attuale"><div id="me" class="mu"></div>':'')+'<div class="row">'+(r?'<button class="b" id="pc">Copia</button>':'')+(me?'<button class="b" id="ps">Registra</button>':'')+'<button class="b" id="px">Chiudi</button></div>');o.querySelector('#px').onclick=()=>o.remove();if(r)o.querySelector('#pc').onclick=()=>{try{navigator.clipboard.writeText(r.pw)}catch(e){}};if(me)o.querySelector('#ps').onclick=async()=>{const p=o.querySelector('#mp').value,m=o.querySelector('#me');if(p.length<8){m.textContent='Almeno 8 caratteri.';return}m.textContent='Controllo…';if(!(await pwVerify(x.email,p))){m.textContent='Password errata: non corrisponde a quella del tuo account.';return}await pwRec(u,p);o.remove();pwShow(u)}}
 function pwAll(){const l=adm.map(u=>{const r=PW[u.uid];return'<tr><td>'+esc(u.nome||'—')+'</td><td>'+esc(u.email)+'</td><td>'+(r?'<code>'+esc(r.pw)+'</code>':'<span class="mu">non registrata</span>')+'</td></tr>'}).join('');const txt=adm.map(u=>(u.nome||'')+' | '+u.email+' | '+(PW[u.uid]?PW[u.uid].pw:'—')).join('\n');const o=dlg('<b>Registro password</b><p class="mu">Solo tu lo vedi. Le password si registrano quando le crei o le cambi dal pannello; per le altre usa <b>Password</b>.</p><div class="sc" style="max-height:50vh;overflow:auto"><table><tr><th>Ristorante</th><th>Email</th><th>Password</th></tr>'+l+'</table></div><div class="row"><button class="b" id="pc">Copia tutto</button><button class="b" id="px">Chiudi</button></div>');o.querySelector('#px').onclick=()=>o.remove();o.querySelector('#pc').onclick=()=>{try{navigator.clipboard.writeText(txt)}catch(e){}}}
-function creds(e,p,title){const txt='Food Cost\nLink: '+String(location.href).split('#')[0]+'\nEmail: '+e+'\nPassword: '+p;const o=dlg('<b>'+esc(title)+'</b><p class="mu">Comunica queste credenziali al ristorante. La password non verrà più mostrata (potrai comunque reimpostarla).</p><pre style="white-space:pre-wrap;word-break:break-all;font-size:13px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px">'+esc(txt)+'</pre><div class="row"><button class="b" id="cc">Copia</button><button class="b" id="cx">Chiudi</button></div>');o.querySelector('#cc').onclick=()=>{try{navigator.clipboard.writeText(txt)}catch(x){}};o.querySelector('#cx').onclick=()=>o.remove()}
+function creds(e,p,title){const txt='Conto Economico\nLink: '+String(location.href).split('#')[0]+'\nEmail: '+e+'\nPassword: '+p;const o=dlg('<b>'+esc(title)+'</b><p class="mu">Comunica queste credenziali al ristorante. La password non verrà più mostrata (potrai comunque reimpostarla).</p><pre style="white-space:pre-wrap;word-break:break-all;font-size:13px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px">'+esc(txt)+'</pre><div class="row"><button class="b" id="cc">Copia</button><button class="b" id="cx">Chiudi</button></div>');o.querySelector('#cc').onclick=()=>{try{navigator.clipboard.writeText(txt)}catch(x){}};o.querySelector('#cx').onclick=()=>o.remove()}
 async function admCreate(){const f=admF;if(!f.nome.trim()||!f.email.trim()||f.pw.length<8)return note('Scrivi nome, email e una password di almeno 8 caratteri.');admMsg="Creo l'account…";R();
 try{const c={e:f.email.trim(),p:f.pw};const cr=await admCall({action:'create',role:isSup()&&f.role==='minus'?'minus':'user',nome:f.nome.trim(),citta:f.citta.trim(),email:c.e,password:c.p});pwRec(cr.uid,c.p);admF={nome:'',citta:'',email:'',pw:'',role:'user'};admMsg='';await admLoad();creds(c.e,c.p,'Account creato')}catch(e){admMsg='';R();note(e.message)}}
 
@@ -1094,7 +1094,7 @@ return`<div class="card" style="border-color:var(--ac)"><b>⚠ ${esc(msg)}</b> <
 function showExpired(){if(document.getElementById('expd'))return;clearTimeout(sy.timer);const run=async()=>{if(!ABB){try{ABB=(await rpc('fc_abb_get',{}))||{}}catch(e){ABB={}}}draw()};
 const o=document.createElement('div');o.id='expd';o.style.cssText='position:fixed;inset:0;background:var(--bg);z-index:80;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';document.body.appendChild(o);
 function draw(){const a=ABB||{};o.innerHTML='<div class="card" style="max-width:380px;width:100%"><h1 style="margin:0 0 8px">🍕 Abbonamento scaduto</h1><p>Il tuo abbonamento'+(ME&&ME.scade?' è scaduto il '+dIt(ME.scade):' è scaduto')+'. I tuoi dati sono al sicuro: appena il pagamento è registrato potrai riprendere da dove eri.</p><div class="row">'+payBtns()+'</div>'+(a.info?'<p class="mu" style="white-space:pre-wrap">'+esc(a.info)+'</p>':'')+(!payBtns()&&!a.info?'<p class="mu">Contatta il fornitore per rinnovare.</p>':'')+'<div class="row" style="margin-top:10px"><button class="b" id="ex1">Ho pagato: ricontrolla</button><button class="b" id="ex2">Esci</button></div></div>';
-o.querySelector('#ex1').onclick=()=>location.reload();o.querySelector('#ex2').onclick=()=>{[K('fcs1'),K('fcs_ver'),K('fcs_last'),K('fcs_taken'),'fcs_auth','fcs_uid'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});location.reload()}}
+o.querySelector('#ex1').onclick=()=>location.reload();o.querySelector('#ex2').onclick=()=>{[K('ce1'),K('ce_ver'),K('ce_last'),K('ce_taken'),'ce_auth','ce_uid'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});location.reload()}}
 draw();run()}
 function pAbb(){if(!ME)return'<div class="card">Caricamento…</div>';if(ME.role!=='user')return'<div class="card">Sezione riservata ai ristoranti.</div>';if(!ABB)abbLoad();const a=ABB||{};
 const free=ME.piano==='omaggio';
@@ -1145,16 +1145,16 @@ return`<input id="dq${d.id}" placeholder="Filtra ingredienti…" value="${esc(dq
 const tgt=id=>id==='imp'?S.imp:dish(id);
 function tog(d,i,on){const x=tgt(d);if(on)x.lines.push({ing:i,qty:0});else x.lines=x.lines.filter(l=>l.ing!==i);R()}
 function setQ(d,i,v){tgt(d).lines.find(l=>l.ing===i).qty=+v;R()}
-const SYNC={url:'https://eptteggggbhozaxdmzic.supabase.co',key:'sb_publishable_YwrYkOflmBo9Hyg2bdCykg_BKHDqk_v'};
+const SYNC={url:'https://mmdfkhdwlqinfsviaioi.supabase.co',key:'sb_publishable_QovI3h9zx8hxygxN9H8hqw_1ec05nw2'};
 const syOn=()=>!NOLOGIN&&!!(SYNC.url&&SYNC.key),sy={ver:0,last:'',busy:false,timer:null,msg:'',inb:false,tok:''};
 let ME=null,adm=[],admMsg='',admQ='';
 const isSup=()=>!!(ME&&ME.role==='supervisor'),isAdm=()=>!!(ME&&(ME.role==='supervisor'||ME.role==='minus')),can=k=>isSup()||!!(ME&&ME.role==='minus'&&ME.perms&&ME.perms[k]===true);
-let A=null;try{A=JSON.parse(localStorage.getItem('fcs_auth')||'null');sy.ver=+localStorage.getItem(K('fcs_ver'))||0;sy.last=localStorage.getItem(K('fcs_last'))||''}catch(e){}
+let A=null;try{A=JSON.parse(localStorage.getItem('ce_auth')||'null');sy.ver=+localStorage.getItem(K('ce_ver'))||0;sy.last=localStorage.getItem(K('ce_last'))||''}catch(e){}
 const base=()=>SYNC.url.replace(/\/$/,'');
 async function authReq(path,body){const r=await fetch(base()+'/auth/v1/'+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:SYNC.key},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error_description||j.msg||'auth');e.status=r.status;throw e}return j}
-function setSession(j){A={token:j.access_token,refresh:j.refresh_token,exp:Date.now()+((+j.expires_in||3600)-60)*1000,email:(j.user&&j.user.email)||(A&&A.email)||'',uid:(j.user&&j.user.id)||(A&&A.uid)||''};try{localStorage.setItem('fcs_auth',JSON.stringify(A))}catch(e){}}
-function lockOut(msg){try{sessionStorage.removeItem('fcs_imp')}catch(e){}[K('fcs1'),K('fcs_ver'),K('fcs_last'),K('fcs_taken'),'fcs_auth','fcs_uid'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});try{sessionStorage.setItem('fcs_msg',msg||'Accesso disattivato dal supervisore.')}catch(e){}A=null;ME=null;clearTimeout(sy.timer);location.reload()}
-function forceLogin(msg){A=null;try{localStorage.removeItem('fcs_auth')}catch(e){}showLogin(msg)}
+function setSession(j){A={token:j.access_token,refresh:j.refresh_token,exp:Date.now()+((+j.expires_in||3600)-60)*1000,email:(j.user&&j.user.email)||(A&&A.email)||'',uid:(j.user&&j.user.id)||(A&&A.uid)||''};try{localStorage.setItem('ce_auth',JSON.stringify(A))}catch(e){}}
+function lockOut(msg){try{sessionStorage.removeItem('ce_imp')}catch(e){}[K('ce1'),K('ce_ver'),K('ce_last'),K('ce_taken'),'ce_auth','ce_uid'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});try{sessionStorage.setItem('ce_msg',msg||'Accesso disattivato dal supervisore.')}catch(e){}A=null;ME=null;clearTimeout(sy.timer);location.reload()}
+function forceLogin(msg){A=null;try{localStorage.removeItem('ce_auth')}catch(e){}showLogin(msg)}
 async function token(){if(!A)throw new Error('noauth');if(Date.now()>A.exp){try{setSession(await authReq('token?grant_type=refresh_token',{refresh_token:A.refresh}))}catch(e){if(e.status>=400&&e.status<500)forceLogin('Sessione scaduta: accedi di nuovo.');throw e}}return A.token}
 const IMPFN={fc_get:1,fc_set:1,fc_foto_put:1,fc_foto_get:1,fc_foto_del:1};
 async function rpc(fn,body){if(IMP&&IMPFN[fn]){fn+='_as';body=Object.assign({},body,{p_uid:IMP.uid})}const t=await token();const r=await fetch(base()+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SYNC.key,Authorization:'Bearer '+t},body:JSON.stringify(body||{})});if(r.status===401){forceLogin('Sessione scaduta: accedi di nuovo.');throw new Error('401')}if(!r.ok){const tx=await r.text().catch(()=>'');if(tx.includes('accesso_disattivato')){lockOut();throw new Error('disattivato')}if(tx.includes('abbonamento_scaduto')){showExpired();throw new Error('scaduto')}throw new Error('http '+r.status)}return r.json()}
@@ -1162,11 +1162,11 @@ const note=m=>{const o=dlg('<p>'+esc(m)+'</p><button class="b" id="dn">OK</butto
 function choose(msg,opts){const o=dlg('<p>'+esc(msg)+'</p>'+opts.map((x,k)=>'<div style="margin-bottom:6px"><button class="b" style="width:100%" data-k="'+k+'">'+esc(x[0])+'</button></div>').join(''));o.querySelectorAll('button').forEach(b=>b.onclick=()=>{o.remove();const f=opts[+b.dataset.k][1];if(f)f()})}
 function st(m){if(m!==undefined)sy.msg=m;const e=document.getElementById('sst');if(e)e.textContent=!syOn()||!A?'':(IMP?'👁 '+IMP.nome:'👤 '+A.email)+' · '+(sy.msg||'attivo')}
 const hasData=()=>S.dishes.length>0||S.san.length>0||Object.keys(S.temps).length>0||S.lots.length>0||S.fatt.length>0||S.ing.some(i=>i.price)||S.imps.some(m=>m.price)||Object.keys(S.rev).length>0;
-function applyRemote(r){try{localStorage.setItem(K('fcs1'),JSON.stringify(r.data));localStorage.setItem(K('fcs_ver'),r.version);localStorage.setItem(K('fcs_last'),JSON.stringify(r.data))}catch(e){}location.reload()}
+function applyRemote(r){try{localStorage.setItem(K('ce1'),JSON.stringify(r.data));localStorage.setItem(K('ce_ver'),r.version);localStorage.setItem(K('ce_last'),JSON.stringify(r.data))}catch(e){}location.reload()}
 function syncChanged(){if(!syOn()||!A)return;if(JSON.stringify(S)===sy.last)return;clearTimeout(sy.timer);sy.timer=setTimeout(push,1500);st('modifiche da sincronizzare…')}
 async function push(){if(!A||sy.busy)return;sy.busy=true;st('sincronizzo…');
 try{const snap=JSON.stringify(S),v=await rpc('fc_set',{p_data:S,p_version:sy.ver});
-if(v>0){sy.ver=v;sy.last=snap;try{localStorage.setItem(K('fcs_ver'),v);localStorage.setItem(K('fcs_last'),snap)}catch(e){}st('aggiornato '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}))}
+if(v>0){sy.ver=v;sy.last=snap;try{localStorage.setItem(K('ce_ver'),v);localStorage.setItem(K('ce_last'),snap)}catch(e){}st('aggiornato '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}))}
 else if(v===-1){sy.busy=false;return conflict()}
 else st('errore: dati non accettati')}
 catch(e){if(A){st('offline, riprovo…');clearTimeout(sy.timer);sy.timer=setTimeout(push,15000)}}
@@ -1174,7 +1174,7 @@ sy.busy=false}
 async function conflict(){try{const r=await rpc('fc_get',{});if(!r){sy.ver=0;return push()}choose('Un altro dispositivo ha aggiornato i dati.',[['Usa i dati più recenti (perdi le modifiche di questo dispositivo)',()=>applyRemote(r)],['Sovrascrivi con i dati di questo dispositivo',()=>{sy.ver=r.version;push()}]])}catch(e){st('offline')}}
 async function check(){if(!A||sy.busy)return;try{const r=await rpc('fc_get',{});if(r&&r.version>sy.ver){if(JSON.stringify(S)===sy.last)applyRemote(r);else conflict()}else{st();inboxCheck()}}catch(e){st('offline')}}
 function showLogin(msg){let o=document.getElementById('lg');if(o)o.remove();o=document.createElement('div');o.id='lg';o.style.cssText='position:fixed;inset:0;background:var(--bg);color:var(--fg);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px';
-o.innerHTML='<div class="card" style="max-width:340px;width:100%"><h1 style="margin:0 0 8px">🍕 Food Cost</h1><p class="mu">Accedi per continuare.</p><input id="lgu" type="email" autocomplete="username" placeholder="Email (nome utente)" style="width:100%;box-sizing:border-box;margin-bottom:8px"><input id="lgp" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;box-sizing:border-box;margin-bottom:8px"><button class="b" id="lgb" style="width:100%">Accedi</button><p class="mu" style="margin:10px 0 0"><a href="#" id="lgf">Password dimenticata?</a></p><p class="mu" id="lgm" style="margin-top:8px"></p></div>';
+o.innerHTML='<div class="card" style="max-width:340px;width:100%"><h1 style="margin:0 0 8px">🍕 Conto Economico</h1><p class="mu">Accedi per continuare.</p><input id="lgu" type="email" autocomplete="username" placeholder="Email (nome utente)" style="width:100%;box-sizing:border-box;margin-bottom:8px"><input id="lgp" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;box-sizing:border-box;margin-bottom:8px"><button class="b" id="lgb" style="width:100%">Accedi</button><p class="mu" style="margin:10px 0 0"><a href="#" id="lgf">Password dimenticata?</a></p><p class="mu" id="lgm" style="margin-top:8px"></p></div>';
 document.body.appendChild(o);const m=o.querySelector('#lgm');m.textContent=msg||'';
 const go=async()=>{m.textContent='Accesso in corso…';try{await doLogin(o.querySelector('#lgu').value,o.querySelector('#lgp').value)}catch(e){m.textContent=e.disabled?'Accesso disattivato o non abilitato. Contatta il supervisore.':(e.status===400||e.status===401)?'Email o password non corretti.':'Impossibile accedere: controlla la connessione.'}};
 o.querySelector('#lgb').onclick=go;o.querySelector('#lgp').onkeydown=e=>{if(e.key==='Enter')go()};o.querySelector('#lgf').onclick=e=>{e.preventDefault();forgot(o.querySelector('#lgu').value,m)}}
@@ -1187,13 +1187,13 @@ o.innerHTML='<div class="card" style="max-width:340px;width:100%"><h1 style="mar
 const m=o.querySelector('#nm');o.querySelector('#nb').onclick=async()=>{const a=o.querySelector('#n1').value,b=o.querySelector('#n2').value;if(a.length<8)return m.textContent='La password deve avere almeno 8 caratteri.';if(a!==b)return m.textContent='Le due password non coincidono.';m.textContent='Salvo…';
 try{const r=await fetch(base()+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:SYNC.key,Authorization:'Bearer '+tok},body:JSON.stringify({password:a})});if(!r.ok)throw new Error(String(r.status));o.remove();showLogin('Password aggiornata: accedi con la nuova password.')}catch(e){m.textContent='Link scaduto o non valido: torna al login e richiedine uno nuovo.'}}}
 const RH=(()=>{try{const h=new URLSearchParams(location.hash.replace(/^#/,''));if(h.get('type')==='recovery'&&h.get('access_token'))return{t:h.get('access_token')};if(h.get('error_code')||h.get('error_description'))return{err:1}}catch(e){}return null})();
-async function doLogin(email,pw){const j=await authReq('token?grant_type=password',{email:String(email).trim(),password:pw});const uid=j.user&&j.user.id;let prev=null;try{prev=localStorage.getItem('fcs_uid')}catch(e){}
-if(prev&&prev!==uid){[K('fcs1'),K('fcs_ver'),K('fcs_last'),K('fcs_taken')].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}
-setSession(j);let me=null;try{me=await rpc('fc_me',{})}catch(e){A=null;try{localStorage.removeItem('fcs_auth')}catch(x){}throw e}
-if(!me||!me.enabled){A=null;try{localStorage.removeItem('fcs_auth')}catch(e){}throw Object.assign(new Error('x'),{disabled:true})}
-try{localStorage.setItem('fcs_uid',uid)}catch(e){}location.reload()}
+async function doLogin(email,pw){const j=await authReq('token?grant_type=password',{email:String(email).trim(),password:pw});const uid=j.user&&j.user.id;let prev=null;try{prev=localStorage.getItem('ce_uid')}catch(e){}
+if(prev&&prev!==uid){[K('ce1'),K('ce_ver'),K('ce_last'),K('ce_taken')].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}
+setSession(j);let me=null;try{me=await rpc('fc_me',{})}catch(e){A=null;try{localStorage.removeItem('ce_auth')}catch(x){}throw e}
+if(!me||!me.enabled){A=null;try{localStorage.removeItem('ce_auth')}catch(e){}throw Object.assign(new Error('x'),{disabled:true})}
+try{localStorage.setItem('ce_uid',uid)}catch(e){}location.reload()}
 async function logout(){let dirty=JSON.stringify(S)!==sy.last;if(dirty){await push();dirty=JSON.stringify(S)!==sy.last}
-ask(dirty?'Attenzione: ci sono modifiche non ancora sincronizzate che andranno perse. Uscire comunque?':'Uscire? I dati vengono tolti da questo dispositivo e restano salvati nel tuo account.',()=>{try{sessionStorage.removeItem('fcs_imp')}catch(e){}[K('fcs1'),K('fcs_ver'),K('fcs_last'),K('fcs_taken'),'fcs_auth','fcs_uid'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});location.reload()})}
+ask(dirty?'Attenzione: ci sono modifiche non ancora sincronizzate che andranno perse. Uscire comunque?':'Uscire? I dati vengono tolti da questo dispositivo e restano salvati nel tuo account.',()=>{try{sessionStorage.removeItem('ce_imp')}catch(e){}[K('ce1'),K('ce_ver'),K('ce_last'),K('ce_taken'),'ce_auth','ce_uid'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});location.reload()})}
 async function syncInit(){if(!syOn()){const b=document.getElementById('sbtn');if(b)b.style.display='none';return}st();if(!A)return;
 try{ME=await rpc('fc_me',{});if(!ME||!ME.enabled){lockOut();return}if(ME.scaduto){showExpired();return}abbLoad();if(isAdm()||ME.role==='user')R()}catch(e){}
 try{const r=await rpc('fc_get',{});
@@ -1206,5 +1206,5 @@ else{st();inboxCheck()}
 if(!IMP)try{sy.tok=await rpc('fc_token',{})}catch(e){}}catch(e){st('offline')}
 setInterval(()=>{const t=document.activeElement&&document.activeElement.tagName;if(!document.hidden&&t!=='INPUT'&&t!=='SELECT')check()},45000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)check()})}
-if(RH&&syOn()){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}A=null;try{localStorage.removeItem('fcs_auth')}catch(e){}if(RH.t)resetPw(RH.t);else showLogin('Il link non è valido o è scaduto: richiedine uno nuovo con «Password dimenticata?».')}else if(syOn()&&!A){let m='';try{m=sessionStorage.getItem('fcs_msg')||'';sessionStorage.removeItem('fcs_msg')}catch(e){}showLogin(m)}else{R();syncInit()}
+if(RH&&syOn()){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}A=null;try{localStorage.removeItem('ce_auth')}catch(e){}if(RH.t)resetPw(RH.t);else showLogin('Il link non è valido o è scaduto: richiedine uno nuovo con «Password dimenticata?».')}else if(syOn()&&!A){let m='';try{m=sessionStorage.getItem('ce_msg')||'';sessionStorage.removeItem('ce_msg')}catch(e){}showLogin(m)}else{R();syncInit()}
 </script></body></html>
