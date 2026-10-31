@@ -190,7 +190,28 @@ table.bpT{min-width:560px}table.bpWide{min-width:1080px}
 .pcK{margin:0!important;display:flex;flex-direction:column;gap:3px}.pcI{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--bg);font-weight:700;margin-bottom:4px}
 .pcBar{height:7px;border-radius:4px;background:var(--bg)}.pcBar i{display:block;height:100%;border-radius:4px;background:var(--ok)}
 @media(prefers-reduced-motion:reduce){.sw,.sw::after,.pTab{transition:none}}
-</style></head><body><div class="app"><aside class="sb" aria-label="Menu"><div id="nav"></div><div class="sbS"><span id="sst"></span><button id="sbtn" onclick="logout()">Esci</button></div></aside>
+/* Personale, prenotazioni, analisi */
+.rP{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;background:color-mix(in srgb,var(--rc) 14%,var(--card));color:var(--rc)}
+.dot{display:inline-block;width:16px;height:16px;border-radius:50%;vertical-align:middle}
+.tGrid{display:grid;grid-template-columns:repeat(7,minmax(128px,1fr));gap:8px;min-width:930px}
+.tCol{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:6px;min-height:260px}
+.tCol.now{border-color:var(--c1);background:color-mix(in srgb,var(--c1) 5%,var(--card))}
+.tH{display:flex;flex-direction:column;align-items:center;padding:4px 0 6px;border-bottom:1px solid var(--bd)}.tH span{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}.tH b{font-size:19px}.tH small{font-size:11px;color:var(--c1);font-variant-numeric:tabular-nums}
+.tS{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:0;border-left:4px solid var(--rc);background:color-mix(in srgb,var(--rc) 11%,var(--card));border-radius:7px;padding:6px 8px;font:inherit;color:var(--fg);cursor:pointer}
+.tS b{font-size:13px;line-height:1.2}.tS span{font-size:11px;color:var(--mu);font-variant-numeric:tabular-nums}
+.tAdd{border:1px dashed var(--bd);background:none;border-radius:7px;color:var(--mu);font:inherit;font-size:18px;padding:4px;cursor:pointer;margin-top:auto}.tAdd:hover{border-color:var(--c1);color:var(--c1)}
+.prW{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.prD{display:flex;flex-direction:column;align-items:center;border:1px solid var(--bd);background:var(--card);border-radius:9px;padding:6px 2px;font:inherit;color:var(--fg);cursor:pointer}.prD span{font-size:11px;color:var(--mu);text-transform:uppercase}.prD b{font-size:18px}.prD small{font-size:11px;color:var(--mu)}
+.prD.on{background:var(--ac);border-color:var(--ac);color:#fff}.prD.on span,.prD.on small{color:#fff}
+.prR{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px}.prR.dim{opacity:.55}.prH{font-size:18px;font-variant-numeric:tabular-nums;min-width:52px}
+.pTab .tm.pr{color:var(--c1);font-weight:600}
+.fbT th,.fbT td{text-align:right;font-variant-numeric:tabular-nums}.fbT th:first-child,.fbT td:first-child{text-align:left}.fbT td.fbC{color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,transparent);font-weight:600}
+.lbG,.kG{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kG{margin-bottom:0}.kG>.card{margin-bottom:8px}@media(max-width:860px){.lbG,.kG{grid-template-columns:1fr}}
+.lbG td,.lbG th{font-variant-numeric:tabular-nums}
+.adv{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;border-left:4px solid var(--bd)}.adv.bad{border-left-color:var(--bad)}.adv.warn{border-left-color:#d9a441}.adv.ok{border-left-color:var(--ok)}.adv.info{border-left-color:var(--c1)}
+.advI{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800;flex:none;background:var(--bg)}.adv.bad .advI{background:var(--bad);color:#fff}.adv.warn .advI{background:#d9a441;color:#fff}.adv.ok .advI{background:var(--ok);color:#fff}.adv.info .advI{background:var(--c1);color:#fff}
+</style></head>
+<body><div class="app"><aside class="sb" aria-label="Menu"><div id="nav"></div><div class="sbS"><span id="sst"></span><button id="sbtn" onclick="logout()">Esci</button></div></aside>
 <div class="sbBg" onclick="document.body.classList.remove('sbo')"></div>
 <main><div class="tb"><button class="b" onclick="document.body.classList.toggle('sbo')" aria-label="Apri il menu">☰</button><b id="tbT"></b></div><div id="v"></div></main></div>
 <script>
@@ -255,7 +276,7 @@ D('ex_d_frit','Mozzarella sticks con patatine','fritti',5.5,[[mst,120],[pfr,150]
 D('ex_d_tira','Tiramisù','altri',5,[[mas,60],[uova,25],[sav,30],[caf,10],[cac,2],[zuc,20]]);
 const z=['luce','gas','affitto','dip','acqua','altro'],v=[250,100,1000,2000,50,100];if(z.every(k=>!+S.p[k])){z.forEach((k,j)=>S.p[k]=v[j]);S.exP=1}
 S.exOn=1;S.exSeen=1}
-function removeExamples(){ask('Cancellare tutti i dati di esempio (pietanze, ingredienti, costi)? I dati che hai inserito tu restano.',()=>{
+function removeExamples(){ask('Cancellare tutti i dati di esempio (pietanze, ingredienti, costi)? I dati che hai inserito tu restano.',()=>{exOpsRemove();
 S.dishes=S.dishes.filter(d=>!d.ex);const usedI=new Set();S.dishes.forEach(d=>d.lines.forEach(l=>usedI.add(l.ing)));S.imps.forEach(m=>CATS.forEach(([c])=>(m.slots[c]||[]).forEach(s=>{if(s.ing)usedI.add(s.ing)})));
 S.ing=S.ing.filter(i=>!(i.ex&&!usedI.has(i.id)));S.ing.forEach(i=>{if(i.exp){i.price=null;delete i.exp}});S.fmt=S.fmt.filter(f=>!(f.ex&&!S.dishes.some(d=>d.pf===f.id)));
 if(S.exDough){const m=S.imps[0];if(m&&m.slots)CATS.forEach(([c])=>(m.slots[c]||[]).forEach(s=>{if(s.qty)s.qty=0}));delete S.exDough}
@@ -287,9 +308,9 @@ return{par:totC()/(base+lav()),c,miss,nog,tot,rec:tot*S.p.ricarico,fc:d.sale?bas
 const used=id=>S.dishes.filter(d=>d.lines.some(l=>l.ing===id)).length;
 function syncOre(){const p=S.p;if(!p.oreMode){p.oreMode='g';const o=+p.ore||0;p.oreH=Math.floor(o+1e-9);p.oreMin=Math.min(59,Math.round((o-p.oreH)*60))}const t=(+p.oreH||0)+(+p.oreMin||0)/60,g=+p.giorni||0;p.ore=p.oreMode==='g'?t:g>0?(p.oreMode==='s'?t*52/12:t)/g:0}
 function fmtOre(h){let H=Math.floor(h+1e-9),m=Math.round((h-H)*60);if(m>=60){H++;m=0}return H+' h '+String(m).padStart(2,'0')+' min'}
-function R(){const _sk=skSave();posInit();magInit();profSync();syncOre();migImp();syncImps();syncSugi();autoPrices();if(view==='trac'){view='haccp';hsub='trac'}if(view==='admin'&&isAdm()&&Date.now()-admAt>20000){admAt=Date.now();admLoad()}save();CH.find(x=>x[0]==='extra')[1]=S.p.extraName||'Altra piattaforma';try{sessionStorage.setItem('ce_view',view)}catch(e){}
+function R(){const _sk=skSave();posInit();magInit();persInit();exOps();profSync();syncOre();migImp();syncImps();syncSugi();autoPrices();if(view==='trac'){view='haccp';hsub='trac'}if(view==='admin'&&isAdm()&&Date.now()-admAt>20000){admAt=Date.now();admLoad()}save();CH.find(x=>x[0]==='extra')[1]=S.p.extraName||'Altra piattaforma';try{sessionStorage.setItem('ce_view',view)}catch(e){}
 document.getElementById('nav').innerHTML=sideNav();
-document.getElementById('v').innerHTML=impBanner()+abbBanner()+exBanner()+(view==='piatti'?pPiatti():view==='haccp'?pHaccp():view==='ing'?pIng():view==='imp'?pImp():view==='rev'?pRev():view==='costi'?pCosti():view==='graf'?pGraf():view==='ce'?pCE():view==='prime'?pPrime():view==='cassa'?pCassa():view==='mag'?pMag():view==='bp'?pBP():TODO[view]?pTodo(view):view==='fmt'?pFmt():view==='fatt'?pFatt():view==='guida'?pGuida():view==='admin'?pAdmin():view==='abb'?pAbb():pPar());if(view==='bp')bpFill();fotoHydrate();skRest(_sk)}
+document.getElementById('v').innerHTML=impBanner()+abbBanner()+exBanner()+(view==='piatti'?pPiatti():view==='haccp'?pHaccp():view==='ing'?pIng():view==='imp'?pImp():view==='rev'?pRev():view==='costi'?pCosti():view==='graf'?pGraf():view==='ce'?pCE():view==='prime'?pPrime():view==='cassa'?pCassa():view==='xls'?pXls():view==='pers'?pPers():view==='pren'?pPren():view==='kpi'?pKpi():view==='ai'?pAdv():view==='mag'?pMag():view==='bp'?pBP():TODO[view]?pTodo(view):view==='fmt'?pFmt():view==='fatt'?pFatt():view==='guida'?pGuida():view==='admin'?pAdmin():view==='abb'?pAbb():pPar());if(view==='bp')bpFill();fotoHydrate();skRest(_sk)}
 function skSave(){const o={y:window.scrollY,l:{}};document.querySelectorAll('[data-sk]').forEach(e=>o.l[e.dataset.sk]=e.scrollTop);return o}
 function skRest(o){document.querySelectorAll('[data-sk]').forEach(e=>{if(o.l[e.dataset.sk]!=null)e.scrollTop=o.l[e.dataset.sk]});if(Math.abs(window.scrollY-o.y)>2)window.scrollTo(0,o.y)}
 function syncImps(){const ids=new Set();S.imps.forEach(m=>{if(m.type==='pasta')return;const id='im_'+m.id;ids.add(id);let i=S.ing.find(z=>z.id===id);if(!i){i={id,unit:'pz',iva:0,auto:true,apz:true};S.ing.push(i)}i.name=m.name;i.price=Math.round(impC(m)*10000)/10000;i.imp=m.id;i.auto=true;i.apz=true;i.unit='pz'});
@@ -891,15 +912,11 @@ gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 
 help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.4c-.7.3-1 .8-1 1.5v.6M12 17h.01"/>',
 card:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6 15h4"/>'};
 const icon=k=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${SVGI[k]||''}</svg>`;
-const MENU=[['cassa','Cassa','cassa'],['pren','Prenotazioni','cal'],[null,'Prodotti','box',[['ing','Ingredienti'],['fmt','Formati pasta']]],['mag','Magazzino','store'],
+const MENU=[['cassa','Cassa','cassa'],['pren','Prenotazioni','cal'],[null,'Prodotti','box',[['ing','Ingredienti'],['fmt','Formati pasta'],['xls','Importa / esporta Excel']]],['mag','Magazzino','store'],
 [null,'Distinte base','list',[['piatti','Piatti e ricette'],['imp','Impasto']]],['pers','Personale','users'],['prime','Prime Cost','euro'],['graf','Dashboard','grid'],['kpi','KPI','bars'],
 ['bp','Business Plan','trend'],['haccp','HACCP','shield'],[null,'Finanza','bank',[['rev','Registro incassi'],['costi','Registro spese'],['fatt','Fatture'],['ce','Conto economico']]],['ai','AI Advisor','spark']];
 const MENU_B=[['par','Parametri','gear'],['guida','Istruzioni','help']];
-const TODO={
-pren:['Prenotazioni','Calendario dei tavoli con coperti per turno, note sul cliente e conferme.',[['cassa','Cassa']]],
-pers:['Personale','Elenco dipendenti con ore, turni e costo mensile reale, da usare nel conto economico al posto del valore fisso di Parametri.',[['par','Parametri']]],
-kpi:['KPI','Coperti, scontrino medio, ricavo per ora lavorata, food cost per categoria di piatti e andamento settimana per settimana.',[['graf','Dashboard']]],
-ai:['AI Advisor','Un assistente che legge i numeri del locale e indica dove intervenire: piatti con margine basso, fornitori in aumento, mesi fuori obiettivo.',[['prime','Prime Cost']]]};
+const TODO={};
 let sbOpen={};
 const vLabel=k=>{for(const m of MENU.concat(MENU_B)){if(m[0]===k)return m[1];if(m[3]){const c=m[3].find(x=>x[0]===k);if(c)return c[1]}}return{admin:'Gestione',abb:'Abbonamento'}[k]||''};
 function navGo(k){view=k;document.body.classList.remove('sbo');R();window.scrollTo(0,0)}
@@ -918,7 +935,7 @@ return`<div class="sbB"><span class="sbL">🍕</span><div><b>Gestionale ConMeSal
 function pTodo(k){const[t,d,L]=TODO[k];return`<div class="card"><div class="row" style="margin:0;justify-content:space-between"><b style="font-size:17px">${t}</b><span class="w">In costruzione</span></div><p style="margin:8px 0;max-width:62ch">${d}</p><div class="row" style="margin:0"><span class="mu">Intanto puoi usare:</span>${L.map(([v,l])=>`<button class="b" onclick="navGo('${v}')">${l}</button>`).join('')}</div></div>`}
 function pPrime(){return pPrimePeriod()+pPrimeOld()}
 function pPrimeOld(){const rows=costsOn(),first=ceFirst(),now=ymd(new Date()).slice(0,7),tgt=+S.p.pcT||62;
-const L=mList(mAdd(now,-11),now).map(m=>{const t=ceData(m,m,rows,first);return{m,t,d:ceDer(t)}}).filter(x=>x.t.has);
+const L=mList(mAdd(now,-11),now).map(m=>{const t=ceData(m,m,rows,first);return{m,t,d:cogsFix(ceDer(t),m,m)}}).filter(x=>x.t.has);
 const head=`<div class="card"><b>Prime cost mese per mese</b><div class="mu" style="margin:4px 0 8px">Materia prima (food e bevande) più costo del personale, in percentuale sui ricavi. È il numero da tenere d'occhio ogni mese: sopra l'obiettivo il margine si assottiglia in fretta.</div><div class="row" style="margin:0"><label>Obiettivo % <input type="number" min="30" max="90" step="0.5" value="${tgt}" onchange="S.p.pcT=+this.value||62;R()" style="width:70px"></label><span class="mu">Fornitori e categorie si gestiscono in Finanza → Conto economico.</span></div></div>`;
 if(!L.length)return head+`<div class="card"><b>Nessun dato negli ultimi 12 mesi</b><div class="mu" style="margin-top:4px">Inserisci incassi in Cassa e spese o fatture in Finanza.</div></div>`;
 const T=L.reduce((a,x)=>{a.R+=x.d.R;a.C+=x.d.cogs;a.P+=x.d.lab;return a},{R:0,C:0,P:0}),last=L[L.length-1],pl=v=>v<=tgt?'ok':'bad',pp=(a,b)=>b?a/b*100:0;
@@ -1147,7 +1164,7 @@ function pSala(){const rooms=S.sale;if(!rooms.length)rooms.push({id:'r'+Date.now
  if(POS.edit)return chips+pSalaEdit(r);
  const occ=S.ordini.filter(x=>x.tipo==='sala');
  const tb=r.tables.map(t=>{const ord=occ.find(x=>x.tav===t.id);const n=Math.min(+t.posti||0,12),seats='<i></i>'.repeat(Math.ceil(n/2));
-  return`<button class="pTab ${ord?'busy':''}" onclick="posTable('${r.id}','${t.id}')" aria-label="Tavolo ${esc(t.name)}${ord?', occupato':', libero'}"><span class="seats">${seats}</span><span class="tn">${esc(t.name)} <small>(${t.posti})</small></span>${ord?`<span class="tt">${eur(ordTot(ord))}</span><span class="tm">${ord.cop} cop. · ${minFrom(ord.aperto)} min</span>`:'<span class="tm">libero</span>'}<span class="seats">${seats}</span></button>`}).join('');
+  return`<button class="pTab ${ord?'busy':''}" onclick="posTable('${r.id}','${t.id}')" aria-label="Tavolo ${esc(t.name)}${ord?', occupato':', libero'}"><span class="seats">${seats}</span><span class="tn">${esc(t.name)} <small>(${t.posti})</small></span>${ord?`<span class="tt">${eur(ordTot(ord))}</span><span class="tm">${ord.cop} cop. · ${minFrom(ord.aperto)} min</span>`:(()=>{const pr=prToday(t.id);return pr?`<span class="tm pr">${pr.h} ${esc(pr.nome)} (${pr.cop})</span>`:'<span class="tm">libero</span>'})()}<span class="seats">${seats}</span></button>`}).join('');
  return chips+`<div class="pFloor">${tb||'<div class="mu">Nessun tavolo in questa sala: premi «Modifica sala» per aggiungerli.</div>'}</div>
  <div class="mu" style="margin-top:8px">${occ.length} tavoli aperti · ${occ.reduce((s,x)=>s+(+x.cop||0),0)} coperti in sala</div>`}
 
@@ -1164,7 +1181,7 @@ function posTable(rid,tid){const ord=S.ordini.find(x=>x.tipo==='sala'&&x.tav===t
  const r=posRoom(rid),t=r.tables.find(x=>x.id===tid);let cop=+t.posti||2;
  const o=posDlg(`<b style="font-size:17px">Apri tavolo ${esc(t.name)}</b><div class="mu">Coperti e cameriere</div>
  <div class="row" style="margin-top:12px;align-items:flex-end"><div><div class="label">Coperti</div><div class="pStep"><button class="b" id="cm" aria-label="Meno">−</button><b id="cv">${cop}</b><button class="b" id="cp" aria-label="Più">+</button></div></div>
- <label style="flex-direction:column;align-items:stretch;flex:1"><span class="label">Cameriere</span><select id="cc"><option value="">Seleziona…</option>${S.cam.map(c=>`<option>${esc(c)}</option>`).join('')}</select></label></div>
+ <label style="flex-direction:column;align-items:stretch;flex:1"><span class="label">Cameriere</span><select id="cc"><option value="">Seleziona…</option>${camList().map(c=>`<option>${esc(c)}</option>`).join('')}</select></label></div>
  <div class="row" style="margin-top:14px"><button class="b" id="cx">Annulla</button><button class="b pPri" id="ok">Apri tavolo</button></div>`,340);
  const show=()=>o.querySelector('#cv').textContent=cop;o.querySelector('#cm').onclick=()=>{cop=Math.max(0,cop-1);show()};o.querySelector('#cp').onclick=()=>{cop++;show()};
  o.querySelector('#cx').onclick=()=>o.remove();
@@ -1321,8 +1338,8 @@ function pMag(){magInit();const tabs=`<div class="pRow"><div><b style="font-size
  const its=magItems().filter(x=>!mq||x.name.toLowerCase().includes(mq)),st=stock();
  const search=`<div class="row"><input id="mq" placeholder="Cerca prodotto…" value="${esc(mq)}" oninput="mq=this.value.toLowerCase();R();const e=document.getElementById('mq');e.focus();e.setSelectionRange(e.value.length,e.value.length)" style="flex:1;max-width:340px"></div>`;
  if(mtab==='gia'){const low=its.filter(x=>{const m=+S.mag.min[x.id]||0;return st[x.id].q<=0&&st[x.id].inv||m&&st[x.id].q<m}).length;
-  return tabs+search+(low?`<div class="card" style="border-color:var(--bad)"><b class="bad">${low} prodotti sotto scorta o esauriti</b></div>`:'')+`<div class="card sc"><table class="mT"><tr><th>Prodotto</th><th>Tipo</th><th>Venduto dall'inventario</th><th>Giacenza</th><th>Scorta minima</th><th></th></tr>${its.map(x=>{const s=st[x.id],m=+S.mag.min[x.id]||0,cl=!s.inv&&!S.mag.mov.some(v=>v.ing===x.id)?'nd':s.q<=0?'bad':m&&s.q<m?'warn':'ok';
-  return`<tr><td><b>${esc(x.name)}</b>${s.inv?`<div class="mu">inventario del ${new Date(s.inv.at).toLocaleDateString('it-IT')}</div>`:''}</td><td class="mu">${x.tipo}</td><td>${s.sold?mqty(s.sold,x.u):'–'}</td><td><span class="mB ${cl}">${cl==='nd'?'da contare':mqty(s.q,x.u)}</span></td><td><input type="number" min="0" step="${x.u==='pz'?1:0.1}" value="${m||''}" placeholder="–" style="width:80px" onchange="S.mag.min['${x.id}']=+this.value||0;R()"> <span class="mu">${x.u}</span></td><td><button class="b" onclick="magMove('${x.id}')">Aggiorna</button></td></tr>`}).join('')||'<tr><td colspan="6" class="mu">Nessun prodotto.</td></tr>'}</table></div>
+  return tabs+search+(low?`<div class="card" style="border-color:var(--bad)"><b class="bad">${low} prodotti sotto scorta o esauriti</b></div>`:'')+`<div class="card sc"><table class="mT"><tr><th>Prodotto</th><th>Tipologia</th><th>Venduto dall'inventario</th><th>Giacenza</th><th>Scorta minima</th><th></th></tr>${its.map(x=>{const s=st[x.id],m=+S.mag.min[x.id]||0,cl=!s.inv&&!S.mag.mov.some(v=>v.ing===x.id)?'nd':s.q<=0?'bad':m&&s.q<m?'warn':'ok';
+  return`<tr><td><b>${esc(x.name)}</b>${s.inv?`<div class="mu">inventario del ${new Date(s.inv.at).toLocaleDateString('it-IT')}</div>`:''}</td><td>${tipCell(x)}</td><td>${s.sold?mqty(s.sold,x.u):'–'}</td><td><span class="mB ${cl}">${cl==='nd'?'da contare':mqty(s.q,x.u)}</span></td><td><input type="number" min="0" step="${x.u==='pz'?1:0.1}" value="${m||''}" placeholder="–" style="width:80px" onchange="S.mag.min['${x.id}']=+this.value||0;R()"> <span class="mu">${x.u}</span></td><td><button class="b" onclick="magMove('${x.id}')">Aggiorna</button></td></tr>`}).join('')||'<tr><td colspan="6" class="mu">Nessun prodotto.</td></tr>'}</table></div>
   <p class="mu">Il primo passo è un <a href="#" onclick="mtab='inv';R();return false" style="color:var(--ac)">inventario fisico</a>: da lì in poi la giacenza si aggiorna da sola con le vendite. Con «Aggiorna» registri carichi (merce arrivata), scarti o correzioni.</p>`}
  if(mtab==='mov'){const days=salesUse(),dk=Object.keys(days).sort().reverse().slice(0,30),names={};magItems().forEach(x=>names[x.id]=x);
   const mv=S.mag.mov.slice().sort((a,b)=>b.ts.localeCompare(a.ts)).slice(0,300);
@@ -1333,7 +1350,7 @@ function pMag(){magInit();const tabs=`<div class="pRow"><div><b style="font-size
  <div class="row" style="margin-top:10px"><button class="b pPri" onclick="magSaveInv()">Salva inventario</button></div></div>`}
 function magDiff(el){const v=el.value===''?null:+el.value,d=document.getElementById('df_'+el.dataset.inv);if(!d)return;if(v==null){d.textContent='';return}const df=v-(+el.dataset.t||0);d.textContent=(df>0?'+':'')+mqty(df,el.dataset.u);d.className=df<0?'bad':'ok'}
 function magSaveInv(){const L=[...document.querySelectorAll('[data-inv]')].filter(i=>i.value!=='');if(!L.length)return note('Scrivi almeno una quantità contata.');const at=new Date();at.setHours(23,59,0,0);const ts=new Date().toISOString(),atI=at.toISOString();
- L.forEach(i=>{const id=i.dataset.inv,q=Math.max(0,+i.value||0);S.mag.inv[id]={q,at:atI};S.mag.mov.push({id:'m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),ts,ing:id,q,t:'inventario',note:''})});mtab='gia';R();note('Inventario salvato per '+L.length+' prodotti.')}
+ L.forEach(i=>{const id=i.dataset.inv,q=Math.max(0,+i.value||0);S.mag.inv[id]={q,at:atI};S.mag.mov.push({id:'m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),ts,at:atI,ing:id,q,t:'inventario',note:''})});mtab='gia';R();note('Inventario salvato per '+L.length+' prodotti.')}
 function magMove(id){const x=magItems().find(z=>z.id===id);const ov=posDlg(`<b style="font-size:17px">${esc(x.name)}</b><div class="mu">Registra un movimento</div>
  <div class="chips" id="mt" style="margin:10px 0 6px">${[['carico','+ Carico'],['scarico','− Scarico / scarto'],['rettifica','± Rettifica']].map(([k,t],j)=>`<button data-t="${k}" class="${j?'':'on'}">${t}</button>`).join('')}</div>
  <div class="row"><label>Quantità <input id="mqv" type="number" min="0" step="${x.u==='pz'?1:0.01}" style="width:110px"> ${x.u}</label></div><label style="flex-direction:column;align-items:stretch;margin-top:6px"><span class="label">Nota</span><input id="mn" placeholder="es. fattura 123 Metro, merce scaduta…"></label>
@@ -1350,7 +1367,7 @@ function salesByTip(from,to){const inM=k=>k.slice(0,7)>=from&&k.slice(0,7)<=to,o
   r.righe.forEach(l=>{const t=l.tip||'altro';out[t]=(out[t]||0)+lineP(l)*(+l.q||0)*f});if(r.coperto)out.coperto=(out.coperto||0)+r.coperto*f});
  Object.keys(S.vend).forEach(k=>{if(!inM(k)||stoDays.has(k))return;Object.entries(S.vend[k]).forEach(([id,q])=>{const d=dish(id);if(!d||d.peso)return;const t=tipOf(d);out[t]=(out[t]||0)+(+d.sale||0)*(+q||0)})});return out}
 function pPrimePeriod(){if(pcT<pcF)pcT=pcF;const rows=costsOn(),first=ceFirst(),n=mList(pcF,pcT).length,pF=mAdd(pcF,-n),pT=mAdd(pcF,-1);
- const c=ceDer(ceData(pcF,pcT,rows,first)),p=ceDer(ceData(pF,pT,rows,first)),tgt=+S.p.pcT||62;
+ const c=cogsFix(ceDer(ceData(pcF,pcT,rows,first)),pcF,pcT),p=cogsFix(ceDer(ceData(pF,pT,rows,first)),pF,pT),tgt=+S.p.pcT||62;
  const dl=(a,b,k)=>{if(!b)return'<span class="mu">— vs periodo prec.</span>';const d=(a-b)/Math.abs(b)*100,g=k==='cost'?d<=0:d>=0;return`<span class="${g?'ok':'bad'}">${d>=0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')}%</span> <span class="mu">vs periodo prec.</span>`};
  const dp=(a,b)=>{if(!isFinite(b)||!p.R)return'<span class="mu">— vs periodo prec.</span>';const d=a-b;return`<span class="${d<=0?'ok':'bad'}">${d>=0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')} pt</span> <span class="mu">vs periodo prec.</span>`};
  const P=(a,b)=>b?a/b*100:NaN,f1=v=>isFinite(v)?v.toFixed(2).replace('.',',')+'%':'–';
@@ -1359,10 +1376,327 @@ function pPrimePeriod(){if(pcT<pcF)pcT=pcF;const rows=costsOn(),first=ceFirst(),
  const rowsT=Object.entries(sales).filter(x=>x[1]>0.004).sort((a,b)=>b[1]-a[1]).map(([t,v])=>`<tr><td><b>${esc(lab[t]||t)}</b></td><td class="ok" style="text-align:right">${eur(v)}</td><td style="text-align:right">${f1(P(v,tot))}</td><td style="width:38%"><div class="pcBar"><i style="width:${Math.max(1,P(v,tot))}%"></i></div></td></tr>`).join('');
  return`<div class="card"><div class="pRow" style="margin:0"><div><b style="font-size:18px">Prime Cost</b><div class="mu">Analisi vendite, food cost e labor cost</div></div>
  <div class="row" style="margin:0"><label>Da <input type="month" value="${pcF}" onchange="pcF=this.value||pcF;R()"></label><label>A <input type="month" value="${pcT}" onchange="pcT=this.value||pcT;R()"></label><label>Obiettivo % <input type="number" min="30" max="90" step="0.5" value="${tgt}" onchange="S.p.pcT=+this.value||62;R()" style="width:70px"></label></div></div></div>
- <div class="pcKs">${k('€','Incasso totale',eur(c.R),dl(c.R,p.R,'rev'))}${k('↯','Costi (consumo)',eur(c.cogs),dl(c.cogs,p.cogs,'cost'))}${k('👥','Labor cost %',f1(P(c.lab,c.R)),dp(P(c.lab,c.R),P(p.lab,p.R)))}${k('%','Food cost %',f1(P(c.cogs,c.R)),dp(P(c.cogs,c.R),P(p.cogs,p.R)))}${k('↗','Prime cost %',`<span class="${!c.R?'':P(c.PC,c.R)<=tgt?'ok':'bad'}">${f1(P(c.PC,c.R))}</span>`,dp(P(c.PC,c.R),P(p.PC,p.R)))}</div>
+ <div class="pcKs">${k('€','Incasso totale',eur(c.R),dl(c.R,p.R,'rev'))}${k('↯','Costi (consumo)'+(c.src?' · dal magazzino':''),eur(c.cogs),dl(c.cogs,p.cogs,'cost'))}${k('👥','Labor cost %',f1(P(c.lab,c.R)),dp(P(c.lab,c.R),P(p.lab,p.R)))}${k('%','Food cost %',f1(P(c.cogs,c.R)),dp(P(c.cogs,c.R),P(p.cogs,p.R)))}${k('↗','Prime cost %',`<span class="${!c.R?'':P(c.PC,c.R)<=tgt?'ok':'bad'}">${f1(P(c.PC,c.R))}</span>`,dp(P(c.PC,c.R),P(p.PC,p.R)))}</div>
  <div class="card sc"><b>Analisi vendite</b><div class="mu" style="margin:2px 0 8px">Incasso per tipologia: dai conti chiusi in Cassa; per i giorni senza conti, dai piatti venduti × prezzo di listino. La tipologia si sceglie in ogni pietanza (Distinte base).</div>
  <table><tr><th>Tipologia</th><th style="text-align:right">Incasso</th><th style="text-align:right">Incidenza %</th><th></th></tr>${rowsT||'<tr><td colspan="4" class="mu">Nessuna vendita nel periodo: usa la Cassa o segna i piatti venduti in Fatturato.</td></tr>'}</table></div>
+${pPrimeExtra()}
  <div class="card"><b>Andamento degli ultimi 12 mesi</b></div>`}
+
+/* ===== Personale: staff, ruoli, turni ===== */
+const GIORNI=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+const addD=(k,n)=>{const x=new Date(k+'T12:00:00');x.setDate(x.getDate()+n);return ymd(x)};
+const monOf=k=>{const x=new Date(k+'T12:00:00');x.setDate(x.getDate()-(x.getDay()+6)%7);return ymd(x)};
+const isoW=k=>{const d=new Date(k+'T12:00:00');d.setDate(d.getDate()+3-(d.getDay()+6)%7);const w1=new Date(d.getFullYear(),0,4);return 1+Math.round(((d-w1)/864e5-3+(w1.getDay()+6)%7)/7)};
+let ptab='staff',pweek=null;
+function persInit(){if(!S.staff)S.staff=[];if(!S.turni)S.turni=[];if(!S.pren)S.pren=[];
+ if(!S.ruoli)S.ruoli=[{id:'manager',n:'Manager',c:'#7c3aed'},{id:'cameriere',n:'Cameriere',c:'#2563eb'},{id:'cuoco',n:'Cuoco',c:'#16a34a'},{id:'pizzaiolo',n:'Pizzaiolo',c:'#d97706'},{id:'barista',n:'Barista',c:'#db2777'},{id:'lavapiatti',n:'Lavapiatti',c:'#64748b'}]}
+const ruolo=id=>S.ruoli.find(r=>r.id===id)||{id:'',n:'—',c:'#64748b'};
+const stf=id=>S.staff.find(s=>s.id===id);
+const tm=s=>{const[h,m]=String(s||'0:0').split(':');return(+h||0)*60+(+m||0)};
+const shH=t=>{let d=tm(t.b)-tm(t.a);if(d<=0)d+=1440;return Math.max(0,d-(+t.p||0))/60};
+const shC=t=>{const s=stf(t.sid);return s?shH(t)*(+s.costo||0):0};
+const shiftsIn=(from,to)=>S.turni.filter(t=>t.d>=from&&t.d<=to);
+const labMonth=m=>{const L=S.turni.filter(t=>t.d.slice(0,7)===m);return L.length?L.reduce((s,t)=>s+shC(t),0):null};
+const camList=()=>{const L=S.staff.filter(s=>s.cassa!==false&&s.attivo!==false).map(s=>s.nome);return L.length?L:S.cam};
+const shId=()=>'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+function pPers(){persInit();
+ const head=`<div class="pRow"><div><b style="font-size:18px">Gestione personale</b><div class="mu">Turni, presenze e costo del lavoro</div></div><div class="tabs">${[['staff','Staff'],['turni','Turni']].map(([k,t])=>`<button type="button" aria-selected="${ptab===k}" onclick="ptab='${k}';R()">${t}</button>`).join('')}</div></div>`;
+ return head+(ptab==='staff'?pStaff():pTurni())}
+function pStaff(){const m=ymd(new Date()).slice(0,7),L=S.turni.filter(t=>t.d.slice(0,7)===m),hrs={},cost={};L.forEach(t=>{hrs[t.sid]=(hrs[t.sid]||0)+shH(t);cost[t.sid]=(cost[t.sid]||0)+shC(t)});
+ const tot=Object.values(cost).reduce((s,v)=>s+v,0);
+ return`<div class="card"><div class="pRow" style="margin:0"><div class="row" style="margin:0"><b>Elenco dipendenti</b><button class="b" onclick="ruoliDlg()">Gestisci ruoli</button></div><button class="b pPri" onclick="staffDlg()">+ Aggiungi staff</button></div>
+ <div class="sc" style="margin-top:8px"><table><tr><th>Nome</th><th>Ruolo</th><th style="text-align:right">Costo orario</th><th>Colore</th><th style="text-align:right">Ore ${esc(mlab(m))}</th><th style="text-align:right">Costo ${esc(mlab(m))}</th><th></th></tr>
+ ${S.staff.map(s=>{const r=ruolo(s.ruolo);return`<tr${s.attivo===false?' style="opacity:.5"':''}><td><b>${esc(s.nome)}</b> ${s.cassa===false?'<span class="w">non entra in cassa</span>':''}${s.attivo===false?' <span class="mu">(non attivo)</span>':''}</td><td><span class="rP" style="--rc:${r.c}">${esc(r.n)}</span></td><td style="text-align:right"><b>${eur(+s.costo||0)} / h</b></td><td><span class="dot" style="background:${s.col||r.c}"></span></td><td style="text-align:right">${(hrs[s.id]||0).toFixed(1).replace('.',',')} h</td><td style="text-align:right">${eur(cost[s.id]||0)}</td><td style="white-space:nowrap"><button class="b" onclick="staffDlg('${s.id}')" aria-label="Modifica">✎</button> <button class="x" onclick="staffDel('${s.id}')" aria-label="Elimina">✕</button></td></tr>`}).join('')||'<tr><td colspan="7" class="mu">Nessun dipendente: premi «+ Aggiungi staff».</td></tr>'}</table></div></div>
+ <div class="card"><b>Costo del personale di ${esc(mlab(m))}: ${eur(tot)}</b><div class="mu" style="margin-top:4px">${L.length?'Calcolato dai turni (ore × costo orario). Nel conto economico e nel prime cost questo valore sostituisce i «Dipendenti» di Parametri per i mesi che hanno turni.':'Nessun turno questo mese: conto economico e prime cost usano il costo «Dipendenti» di Parametri.'} Il costo orario va inteso come costo azienda (lordo + contributi).</div></div>`}
+function staffDlg(id){const s=id?stf(id):{nome:'',ruolo:(S.ruoli[0]||{}).id,costo:'',cassa:true,attivo:true,col:''};
+ const ov=posDlg(`<b style="font-size:17px">${id?'Modifica dipendente':'Nuovo dipendente'}</b>
+ <label class="fld" style="margin-top:10px"><span class="label">Nome e cognome</span><input id="sn" value="${esc(s.nome)}"></label>
+ <div class="row" style="margin-top:8px"><label class="fld" style="flex:1"><span class="label">Ruolo</span><select id="sr">${S.ruoli.map(r=>`<option value="${r.id}" ${r.id===s.ruolo?'selected':''}>${esc(r.n)}</option>`).join('')}</select></label><label class="fld"><span class="label">Costo orario €</span><input id="sc" type="number" min="0" step="0.5" value="${s.costo}" style="width:110px"></label></div>
+ <div class="row" style="margin-top:8px"><label><input type="checkbox" id="sk" ${s.cassa!==false?'checked':''}> Entra in cassa (compare tra i camerieri)</label></div>
+ <div class="row"><label><input type="checkbox" id="sa" ${s.attivo!==false?'checked':''}> Attivo</label><label>Colore <input type="color" id="sl" value="${s.col||ruolo(s.ruolo).c}" style="width:50px;padding:0;height:30px"></label></div>
+ <div class="row" style="margin-top:12px"><button class="b" id="cx">Annulla</button><button class="b pPri" id="ok">Salva</button></div>`,400);
+ const $=x=>ov.querySelector(x);$('#sn').focus();$('#cx').onclick=()=>ov.remove();
+ $('#sr').onchange=()=>{if(!s.col)$('#sl').value=ruolo($('#sr').value).c};
+ $('#ok').onclick=()=>{const n=cap($('#sn').value.trim());if(!n)return $('#sn').focus();const col=$('#sl').value,o={nome:n,ruolo:$('#sr').value,costo:Math.max(0,+$('#sc').value||0),cassa:$('#sk').checked,attivo:$('#sa').checked,col:col.toLowerCase()===ruolo($('#sr').value).c.toLowerCase()?'':col};
+  if(id)Object.assign(s,o);else S.staff.push(Object.assign({id:'s'+Date.now().toString(36)},o));S.staff.sort((a,b)=>a.nome.localeCompare(b.nome));ov.remove();R()}}
+function staffDel(id){const n=S.turni.filter(t=>t.sid===id).length;ask(n?'Questo dipendente ha '+n+' turni registrati. Eliminandolo spariscono anche i turni e il loro costo. Se ha solo smesso di lavorare, conviene togliere la spunta «Attivo». Eliminare comunque?':'Eliminare questo dipendente?',()=>{S.staff=S.staff.filter(s=>s.id!==id);S.turni=S.turni.filter(t=>t.sid!==id);R()})}
+function ruoliDlg(){const ov=posDlg('<div id="rl"></div>',420),box=ov.querySelector('#rl');
+ const draw=()=>{box.innerHTML=`<b style="font-size:17px">Ruoli</b><div class="mu">Il colore del ruolo si usa nei turni.</div><div style="margin-top:8px">${S.ruoli.map((r,i)=>`<div class="row" style="margin:4px 0"><input type="color" value="${r.c}" data-c="${i}" style="width:44px;padding:0;height:30px"><input value="${esc(r.n)}" data-n="${i}" style="flex:1"><button class="x" data-d="${i}" aria-label="Elimina ruolo">✕</button></div>`).join('')}</div>
+ <div class="row" style="margin-top:8px"><input id="rn" placeholder="Nuovo ruolo" style="flex:1"><button class="b" id="ra">+ Aggiungi</button></div><div class="row" style="margin-top:10px"><button class="b pPri" id="ok">Fatto</button></div>`;
+  box.querySelectorAll('[data-c]').forEach(e=>e.onchange=()=>{S.ruoli[+e.dataset.c].c=e.value});
+  box.querySelectorAll('[data-n]').forEach(e=>e.onchange=()=>{S.ruoli[+e.dataset.n].n=cap(e.value.trim())||S.ruoli[+e.dataset.n].n});
+  box.querySelectorAll('[data-d]').forEach(e=>e.onclick=()=>{const r=S.ruoli[+e.dataset.d];if(S.staff.some(s=>s.ruolo===r.id)){e.textContent='in uso';return}S.ruoli.splice(+e.dataset.d,1);draw()});
+  box.querySelector('#ra').onclick=()=>{const n=cap(box.querySelector('#rn').value.trim());if(!n)return;S.ruoli.push({id:'r'+Date.now().toString(36),n,c:'#0891b2'});draw()};
+  box.querySelector('#ok').onclick=()=>{ov.remove();R()}};draw()}
+function pTurni(){if(!pweek)pweek=monOf(ymd(new Date()));const days=[0,1,2,3,4,5,6].map(i=>addD(pweek,i)),to=days[6],L=shiftsIn(pweek,to),tot=L.reduce((s,t)=>s+shC(t),0),hrs=L.reduce((s,t)=>s+shH(t),0),today=ymd(new Date());
+ const d0=new Date(pweek+'T12:00:00'),title=d0.toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+ const cols=days.map((k,i)=>{const ds=L.filter(t=>t.d===k).sort((a,b)=>a.a.localeCompare(b.a));const c=ds.reduce((s,t)=>s+shC(t),0);
+  return`<div class="tCol${k===today?' now':''}"><div class="tH"><span>${GIORNI[i]}</span><b>${+k.slice(8)}</b><small>${c?eur(c):'&nbsp;'}</small></div>${ds.map(t=>{const s=stf(t.sid)||{nome:'(eliminato)'},col=s.col||ruolo(s.ruolo).c;return`<button class="tS" style="--rc:${col}" onclick="turnoDlg('${t.id}')"><b>${esc(s.nome)}</b><span>${t.a}–${t.b}${+t.p?' · pausa '+t.p+'′':''}</span></button>`}).join('')}<button class="tAdd" onclick="turnoDlg(null,'${k}')" aria-label="Aggiungi turno ${GIORNI[i]}">+</button></div>`}).join('');
+ return`<div class="card"><div class="pRow" style="margin:0"><div class="row" style="margin:0"><button class="b" onclick="pweek=addD(pweek,-7);R()" aria-label="Settimana precedente">‹</button><b style="min-width:200px;text-align:center;text-transform:capitalize">${esc(title)} · settimana ${isoW(pweek)}</b><button class="b" onclick="pweek=addD(pweek,7);R()" aria-label="Settimana successiva">›</button><button class="b" onclick="pweek=monOf(ymd(new Date()));R()">Oggi</button></div>
+ <div class="row" style="margin:0"><button class="b" onclick="copyWeek()">Copia settimana</button><div style="text-align:right"><div class="label">Labor cost stimato</div><b style="font-size:19px;color:var(--c1)">${eur(tot)}</b><div class="mu" style="font-size:12px">${hrs.toFixed(1).replace('.',',')} ore</div></div><button class="b pPri" onclick="turnoDlg(null,'${pweek}')">+ Nuovo turno</button></div></div></div>
+ ${S.staff.length?'':'<div class="card"><b>Prima aggiungi i dipendenti</b> <button class="b" onclick="ptab=\'staff\';R()">Vai a Staff</button></div>'}
+ <div class="sc"><div class="tGrid">${cols}</div></div>`}
+function turnoDlg(id,day){if(!S.staff.length){ptab='staff';R();return note('Aggiungi prima almeno un dipendente.')}const t=id?S.turni.find(x=>x.id===id):{sid:S.staff.filter(s=>s.attivo!==false)[0]?.id||S.staff[0].id,d:day||ymd(new Date()),a:'10:00',b:'15:00',p:0};
+ const ov=posDlg(`<b style="font-size:17px">${id?'Modifica turno':'Nuovo turno'}</b>
+ <label class="fld" style="margin-top:10px"><span class="label">Dipendente</span><select id="ts">${S.staff.filter(s=>s.attivo!==false||s.id===t.sid).map(s=>`<option value="${s.id}" ${s.id===t.sid?'selected':''}>${esc(s.nome)} · ${esc(ruolo(s.ruolo).n)}</option>`).join('')}</select></label>
+ <div class="row" style="margin-top:8px"><label class="fld"><span class="label">Giorno</span><input type="date" id="td" value="${t.d}"></label><label class="fld"><span class="label">Inizio</span><input type="time" id="ta" value="${t.a}"></label><label class="fld"><span class="label">Fine</span><input type="time" id="tb" value="${t.b}"></label><label class="fld"><span class="label">Pausa (min)</span><input type="number" id="tp" min="0" step="5" value="${+t.p||0}" style="width:80px"></label></div>
+ ${id?'':'<div class="row"><label><input type="checkbox" id="tw"> Ripeti per tutti i giorni della settimana</label></div>'}
+ <div class="mu" id="tc" style="margin-top:6px"></div>
+ <div class="row" style="margin-top:12px">${id?'<button class="x" id="del">Elimina turno</button>':''}<button class="b" id="cx">Annulla</button><button class="b pPri" id="ok">Salva</button></div>`,460);
+ const $=x=>ov.querySelector(x),upd=()=>{const s=stf($('#ts').value),h=shH({a:$('#ta').value,b:$('#tb').value,p:+$('#tp').value||0});$('#tc').textContent=h.toFixed(2).replace('.',',')+' ore · '+eur(h*(+(s||{}).costo||0))};
+ ['#ts','#ta','#tb','#tp'].forEach(x=>$(x).oninput=upd);upd();$('#cx').onclick=()=>ov.remove();
+ if(id)$('#del').onclick=()=>{S.turni=S.turni.filter(x=>x.id!==id);ov.remove();R()};
+ $('#ok').onclick=()=>{const o={sid:$('#ts').value,d:$('#td').value||t.d,a:$('#ta').value||'10:00',b:$('#tb').value||'15:00',p:Math.max(0,+$('#tp').value||0)};
+  if(id)Object.assign(t,o);else{const ds=$('#tw')&&$('#tw').checked?[0,1,2,3,4,5,6].map(i=>addD(monOf(o.d),i)):[o.d];ds.forEach(d=>S.turni.push(Object.assign({id:shId()},o,{d})))}
+  pweek=monOf(o.d);ov.remove();R()}}
+function copyWeek(){const L=shiftsIn(pweek,addD(pweek,6));if(!L.length)return note('Questa settimana non ha turni da copiare.');const nx=addD(pweek,7),ex=shiftsIn(nx,addD(nx,6));
+ const go=()=>{L.forEach(t=>{const d=addD(t.d,7);if(!S.turni.some(x=>x.sid===t.sid&&x.d===d&&x.a===t.a))S.turni.push(Object.assign({},t,{id:shId(),d,ex:undefined}))});pweek=nx;R()};
+ if(ex.length)ask('La settimana successiva ha già '+ex.length+' turni. Copiare comunque? I turni uguali non vengono duplicati.',go);else go()}
+
+/* ===== Prenotazioni ===== */
+let prDay=ymd(new Date());
+const PR_ST={conf:['Confermata','ok'],arr:['Arrivati','c1'],ann:['Annullata','mu'],nos:['Non si è presentato','bad']};
+const tabName=tid=>{for(const r of S.sale||[]){const t=r.tables.find(x=>x.id===tid);if(t)return{room:r,t}}return null};
+function pPren(){persInit();posInit();const L=S.pren.filter(p=>p.d===prDay).sort((a,b)=>a.h.localeCompare(b.h)),act=L.filter(p=>p.st!=='ann'&&p.st!=='nos');
+ const week=[0,1,2,3,4,5,6].map(i=>addD(ymd(new Date()),i)).map(k=>{const n=S.pren.filter(p=>p.d===k&&p.st!=='ann'&&p.st!=='nos');return`<button class="prD ${k===prDay?'on':''}" onclick="prDay='${k}';R()"><span>${new Date(k+'T12:00:00').toLocaleDateString('it-IT',{weekday:'short'})}</span><b>${+k.slice(8)}</b><small>${n.length?n.reduce((s,p)=>s+(+p.cop||0),0)+' cop.':'–'}</small></button>`}).join('');
+ const grp=(lab,arr)=>arr.length?`<div class="label" style="margin:12px 0 4px">${lab} · ${arr.filter(p=>p.st!=='ann'&&p.st!=='nos').reduce((s,p)=>s+(+p.cop||0),0)} coperti</div>${arr.map(p=>{const tb=p.tav&&tabName(p.tav),[sl,sc]=PR_ST[p.st||'conf'];return`<div class="card prR${p.st==='ann'||p.st==='nos'?' dim':''}"><b class="prH">${p.h}</b><div style="flex:1;min-width:160px"><b>${esc(p.nome)}</b> · ${p.cop} coperti${tb?' · tavolo '+esc(tb.t.name)+' ('+esc(tb.room.name)+')':''}<div class="mu">${p.tel?esc(p.tel)+' · ':''}${esc(p.note||'')}</div></div><span class="pill ${sc==='ok'?'good':''}" style="${sc==='bad'?'color:var(--bad)':sc==='c1'?'color:var(--c1)':''}">${sl}</span>
+ <span class="row" style="margin:0">${p.st!=='arr'&&p.st!=='ann'&&p.st!=='nos'?`<button class="b pPri" onclick="prArr('${p.id}')">Arrivati</button>`:''}<button class="b" onclick="prDlg('${p.id}')" aria-label="Modifica">✎</button></span></div>`}).join('')}`:'';
+ return`<div class="pRow"><div><b style="font-size:18px">Prenotazioni</b><div class="mu">${new Date(prDay+'T12:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})} · ${act.length} prenotazioni · ${act.reduce((s,p)=>s+(+p.cop||0),0)} coperti</div></div><div class="row" style="margin:0"><button class="b" onclick="prDay=addD(prDay,-1);R()" aria-label="Giorno precedente">‹</button><input type="date" value="${prDay}" onchange="prDay=this.value||prDay;R()"><button class="b" onclick="prDay=addD(prDay,1);R()" aria-label="Giorno successivo">›</button><button class="b pPri" onclick="prDlg()">+ Nuova prenotazione</button></div></div>
+ <div class="prW">${week}</div>${L.length?grp('Pranzo',L.filter(p=>p.h<'17:00'))+grp('Cena',L.filter(p=>p.h>='17:00')):'<div class="card mu">Nessuna prenotazione per questo giorno.</div>'}`}
+function prDlg(id){posInit();const p=id?S.pren.find(x=>x.id===id):{d:prDay,h:'20:30',nome:'',tel:'',cop:2,tav:'',note:'',st:'conf'};
+ const tabs=S.sale.map(r=>`<optgroup label="${esc(r.name)}">${r.tables.map(t=>`<option value="${t.id}" ${t.id===p.tav?'selected':''}>${esc(t.name)} (${t.posti} posti)</option>`).join('')}</optgroup>`).join('');
+ const ov=posDlg(`<b style="font-size:17px">${id?'Modifica prenotazione':'Nuova prenotazione'}</b>
+ <div class="row" style="margin-top:10px"><label class="fld"><span class="label">Giorno</span><input type="date" id="pd" value="${p.d}"></label><label class="fld"><span class="label">Ora</span><input type="time" id="ph" value="${p.h}" step="900"></label><label class="fld"><span class="label">Coperti</span><input type="number" id="pc" min="1" value="${p.cop}" style="width:80px"></label></div>
+ <div class="row"><label class="fld" style="flex:1"><span class="label">Nome</span><input id="pn" value="${esc(p.nome)}"></label><label class="fld" style="flex:1"><span class="label">Telefono</span><input id="pt" type="tel" value="${esc(p.tel)}"></label></div>
+ <div class="row"><label class="fld" style="flex:1"><span class="label">Tavolo (facoltativo)</span><select id="pv"><option value="">Da assegnare</option>${tabs}</select></label>${id?`<label class="fld"><span class="label">Stato</span><select id="ps">${Object.entries(PR_ST).map(([k,[l]])=>`<option value="${k}" ${k===(p.st||'conf')?'selected':''}>${l}</option>`).join('')}</select></label>`:''}</div>
+ <label class="fld" style="margin-top:6px"><span class="label">Note</span><input id="po" value="${esc(p.note)}" placeholder="es. compleanno, seggiolone, allergie"></label>
+ <div class="mu" id="pw" style="margin-top:6px"></div>
+ <div class="row" style="margin-top:12px">${id?'<button class="x" id="del">Elimina</button>':''}<button class="b" id="cx">Annulla</button><button class="b pPri" id="ok">Salva</button></div>`,480);
+ const $=x=>ov.querySelector(x);$('#pn').focus();$('#cx').onclick=()=>ov.remove();
+ const warn=()=>{const tv=$('#pv').value,d=$('#pd').value,h=$('#ph').value,clash=tv&&S.pren.find(x=>x.id!==id&&x.tav===tv&&x.d===d&&x.st!=='ann'&&x.st!=='nos'&&Math.abs(tm(x.h)-tm(h))<120);const tb=tv&&tabName(tv);
+  $('#pw').innerHTML=(clash?'<span class="bad">Il tavolo è già prenotato alle '+clash.h+' ('+esc(clash.nome)+').</span> ':'')+(tb&&+$('#pc').value>tb.t.posti?'<span class="bad">Il tavolo ha '+tb.t.posti+' posti.</span>':'')};
+ ['#pv','#pd','#ph','#pc'].forEach(x=>$(x).oninput=warn);warn();
+ if(id)$('#del').onclick=()=>{S.pren=S.pren.filter(x=>x.id!==id);ov.remove();R()};
+ $('#ok').onclick=()=>{const n=cap($('#pn').value.trim());if(!n)return $('#pn').focus();const o={d:$('#pd').value||p.d,h:$('#ph').value||'20:00',cop:Math.max(1,+$('#pc').value||1),nome:n,tel:$('#pt').value.trim(),tav:$('#pv').value,note:$('#po').value.trim(),st:id?$('#ps').value:'conf'};
+  if(id)Object.assign(p,o);else S.pren.push(Object.assign({id:'p'+Date.now().toString(36)},o));prDay=o.d;ov.remove();R()}}
+function prArr(id){const p=S.pren.find(x=>x.id===id);p.st='arr';const tb=p.tav&&tabName(p.tav);
+ if(tb&&!S.ordini.some(o=>o.tipo==='sala'&&o.tav===p.tav)){const ord={id:posId(),tipo:'sala',room:tb.room.id,tav:p.tav,tavN:tb.t.name,cop:+p.cop||1,cam:'',righe:[],aperto:new Date().toISOString(),sconto:0,nome:p.nome};S.ordini.push(ord);view='cassa';POS.tab='sala';POS.ord=ord.id;POS.cat='tutti';POS.usc=1;R();return}
+ R();if(!tb)note('Segnati come arrivati. Assegna un tavolo e aprilo dalla Cassa.')}
+const prToday=tid=>{const k=ymd(new Date());return S.pren.filter(p=>p.d===k&&p.tav===tid&&(p.st||'conf')==='conf').sort((a,b)=>a.h.localeCompare(b.h))[0]};
+
+/* ===== Costo del personale nel conto economico ===== */
+function cogsFix(o,f,t){if(o.cogs>0)return o;const v=Object.values(fbAnalysis(f,t).rows).reduce((s,r)=>s+r.cr,0);if(v>0){o.cogs=v;o.PC=v+o.lab;o.MC=o.R-o.PC-o.ctrl;o.RO=o.MC-o.fix;o.src='magazzino'}return o}
+function labRange(from,to,first){const now=ymd(new Date()).slice(0,7);return mList(from,to).reduce((s,m)=>{const v=labMonth(m);if(v!=null)return s+v;return s+(m>=first&&m<=now?fixV('dip'):0)},0)}
+
+/* ===== Valori di magazzino nel tempo ===== */
+function invAt(id,cut){let b=null;S.mag.mov.forEach(m=>{if(m.ing===id&&m.t==='inventario'){const at=m.at||m.ts;if(at<=cut&&(!b||at>b.at))b={q:+m.q,at}}});return b}
+function qtyAt(id,cut,days){const inv=invAt(id,cut),since=inv?inv.at:'';let q=inv?inv.q:0;S.mag.mov.forEach(m=>{if(m.ing===id&&m.t!=='inventario'&&m.ts>since&&m.ts<=cut)q+=+m.q});
+ const sd=since.slice(0,10),cd=cut.slice(0,10);Object.keys(days).forEach(k=>{if(k>sd&&k<=cd&&days[k][id])q-=days[k][id]});return q}
+function unitVal(id){if(id.startsWith('f_')){const f=S.fmt.find(x=>'f_'+x.id===id);if(!f||!f.price)return 0;let p=+f.price;if(S.p.useIva)p*=1+(+f.iva||10)/100;return p}const i=ing(id);if(!i)return 0;return i.unit==='pz'||i.apz?uc(i):uc(i)*1000}
+const itemTip=id=>{if(id.startsWith('f_'))return'food';const i=ing(id);return(i&&i.tip)||'food'};
+const tipCell=x=>x.id.startsWith('f_')?'<span class="mu">Food</span>':`<select onchange="ing('${x.id}').tip=this.value;R()" aria-label="Tipologia" style="padding:3px 6px">${TIP.map(([k,t])=>`<option value="${k}" ${itemTip(x.id)===k?'selected':''}>${t}</option>`).join('')}</select>`;
+const lastDay=m=>{const[y,mm]=m.split('-').map(Number);return m+'-'+String(new Date(y,mm,0).getDate()).padStart(2,'0')};
+function fbAnalysis(from,to){magInit();const days=salesUse(),a=from+'-01',z=lastDay(to),c0=addD(a,-1)+'T23:59:59',c1=z+'T23:59:59',out={},sprechi=[];
+ magItems().forEach(it=>{const id=it.id,v=unitVal(id),t=itemTip(id);const o=out[t]||(out[t]={ini:0,acq:0,teo:0,fin:0,finR:0,cr:0});
+  let teo=0;Object.keys(days).forEach(k=>{if(k>=a&&k<=z&&days[k][id])teo+=days[k][id]});
+  const tracked=S.mag.mov.some(m=>m.ing===id&&(m.at||m.ts)<=c1);
+  if(!tracked){o.teo+=teo*v;o.cr+=teo*v;return}
+  const ini=Math.max(0,qtyAt(id,c0,days)),acq=S.mag.mov.filter(m=>m.ing===id&&m.t==='carico'&&m.ts>c0&&m.ts<=c1).reduce((s,m)=>s+(+m.q),0),finR=qtyAt(id,c1,days),fin=ini+acq-teo;
+  o.ini+=ini*v;o.acq+=acq*v;o.teo+=teo*v;o.fin+=fin*v;o.finR+=finR*v;o.cr+=(ini+acq-finR)*v;
+  S.mag.mov.filter(m=>m.ing===id&&(m.t==='scarico'||m.t==='rettifica')&&+m.q<0&&m.ts>c0&&m.ts<=c1).forEach(m=>sprechi.push({n:it.name,u:it.u,q:-m.q,v:-m.q*v,note:m.note,ts:m.ts}))});
+ return{rows:out,sprechi:sprechi.sort((x,y)=>y.v-x.v)}}
+function pPrimeExtra(){const fb=fbAnalysis(pcF,pcT),sales=salesByTip(pcF,pcT),lab=Object.fromEntries(TIP);
+ const R_=Object.entries(fb.rows).filter(([,o])=>Math.abs(o.teo)+Math.abs(o.ini)+Math.abs(o.acq)>0.005);
+ const tr=R_.map(([t,o])=>{const fc=sales[t]?o.teo/sales[t]:NaN,sc=o.cr-o.teo;return`<tr><td><b>${esc(lab[t]||t)}</b></td><td>${eur(o.ini)}</td><td>${eur(o.acq)}</td><td>${eur(o.fin)}</td><td class="fbC">${eur(o.teo)}</td><td><b>${isFinite(fc)?(fc*100).toFixed(2).replace('.',',')+'%':'–'}</b></td><td>${eur(o.finR)}</td><td>${eur(o.cr)}</td><td class="${sc>0.5?'bad':sc<-0.5?'ok':'mu'}"><b>${(sc>0?'+':'')+eur(sc)}</b></td></tr>`}).join('');
+ const sp=fb.sprechi.slice(0,30).map(s=>`<tr><td><b>${esc(s.n)}</b><div class="mu">${new Date(s.ts).toLocaleDateString('it-IT')}${s.note?' · '+esc(s.note):''}</div></td><td>${mqty(s.q,s.u)}</td><td class="bad">${eur(s.v)}</td><td><span class="w">Spreco / avaria</span></td></tr>`).join('');
+ const a=pcF+'-01',z=lastDay(pcT),dayK=new Set(Object.keys(S.rev).filter(k=>k>=a&&k<=z));shiftsIn(a,z).forEach(t=>dayK.add(t.d));
+ const inc=k=>Object.entries(S.rev[k]||{}).filter(([c])=>c!=='_o').reduce((s,[,v])=>s+(+v||0),0);
+ const _td=ymd(new Date()),dl=[...dayK].filter(k=>k<=_td).sort().reverse().map(k=>{const i=inc(k),l=shiftsIn(k,k).reduce((s,t)=>s+shC(t),0),p=i?l/i:NaN;return`<tr><td>${dIt(k)}</td><td class="ok">${eur(i)}</td><td style="color:var(--c1)">${eur(l)}</td><td class="${p>.38?'bad':p>.3?'':'ok'}">${isFinite(p)?(p*100).toFixed(2).replace('.',',')+'%':'–'}</td></tr>`}).join('');
+ const bySt={};shiftsIn(a,z).forEach(t=>{const o=bySt[t.sid]||(bySt[t.sid]={h:0,c:0});o.h+=shH(t);o.c+=shC(t)});
+ const sl=Object.entries(bySt).sort((x,y)=>y[1].c-x[1].c).map(([id,o])=>`<tr><td>${esc((stf(id)||{nome:'(eliminato)'}).nome)}</td><td>${o.h.toFixed(1).replace('.',',')} h</td><td style="color:var(--c1)"><b>${eur(o.c)}</b></td></tr>`).join('');
+ return`<div class="card sc"><b>Analisi F&amp;B cost (consumi)</b><div class="mu" style="margin:2px 0 8px">Per tipologia di merce. <b>Consumo</b> = quanto dovrebbe essere uscito secondo le ricette dei piatti venduti. <b>Consumo reale</b> = inventario iniziale + acquisti − inventario finale. Lo scostamento sono sprechi, porzioni abbondanti o piatti non battuti. Servono inventari e carichi in Magazzino; la tipologia della merce si sceglie in Magazzino.</div>
+ <table class="fbT"><tr><th>Tipologia</th><th>Inv. iniziale</th><th>Acquisti</th><th>Inv. finale</th><th>Consumo</th><th>F&amp;B cost</th><th>Inv. finale reale</th><th>Consumo reale</th><th>Scostamento</th></tr>${tr||'<tr><td colspan="9" class="mu">Nessun movimento di magazzino o vendita nel periodo.</td></tr>'}</table></div>
+ <div class="card sc"><b>Sprechi e rettifiche</b><table style="margin-top:6px"><tr><th>Prodotto</th><th>Quantità</th><th>Valore</th><th></th></tr>${sp||'<tr><td colspan="4" class="mu">Nessuno scarico o rettifica negativa nel periodo. Si registrano in Magazzino con «Aggiorna».</td></tr>'}</table></div>
+ <div class="card"><b>Analisi labor cost</b><div class="mu" style="margin:2px 0 8px">Dai turni del Personale (ore × costo orario) e dagli incassi del giorno.</div><div class="lbG">
+ <div class="sc"><b class="label">Andamento giornaliero</b><table style="margin-top:4px"><tr><th>Data</th><th>Incasso</th><th>Costo labor</th><th>Incidenza</th></tr>${dl||'<tr><td colspan="4" class="mu">Nessun dato nel periodo.</td></tr>'}</table></div>
+ <div class="sc"><b class="label">Dettaglio staff</b><table style="margin-top:4px"><tr><th>Nome</th><th>Ore totali</th><th>Costo totale</th></tr>${sl||'<tr><td colspan="3" class="mu">Nessun turno nel periodo: inseriscili in Personale → Turni.</td></tr>'}</table></div></div></div>`}
+
+/* ===== KPI ===== */
+let kF=ymd(new Date()).slice(0,7),kT=ymd(new Date()).slice(0,7);
+function pKpi(){if(kT<kF)kT=kF;const a=kF+'-01',z=lastDay(kT),st=S.storico.filter(r=>r.k>=a&&r.k<=z),c=ceDer(ceData(kF,kT)),inc=c.R;
+ const sala=st.filter(r=>r.tipo==='sala'),cop=sala.reduce((s,r)=>s+(+r.cop||0),0),ore=shiftsIn(a,z).reduce((s,t)=>s+shH(t),0);
+ const q={};Object.keys(S.vend).filter(k=>k>=a&&k<=z).forEach(k=>Object.entries(S.vend[k]).forEach(([id,n])=>q[id]=(q[id]||0)+(+n||0)));const pz=Object.values(q).reduce((s,v)=>s+v,0);
+ const k_=(l,v,s)=>`<div class="card pcK"><div class="mu">${l}</div><div class="ceV">${v}</div><div class="mu" style="font-size:12px">${s}</div></div>`;
+ const top=Object.entries(q).map(([id,n])=>{const d=dish(id);if(!d)return null;const x=fcInfo(d);return{d,n,ric:(+d.sale||0)*n,mg:isFinite(x.mg)?x.mg*n:0,fc:x.fc}}).filter(Boolean);
+ const tq=top.slice().sort((x,y)=>y.n-x.n).slice(0,10),tm_=top.slice().sort((x,y)=>y.mg-x.mg).slice(0,10);
+ const wd=[0,0,0,0,0,0,0],wn=[0,0,0,0,0,0,0];Object.keys(S.rev).filter(k=>k>=a&&k<=z).forEach(k=>{const i=Object.entries(S.rev[k]).filter(([x])=>x!=='_o').reduce((s,[,v])=>s+(+v||0),0);if(!i)return;const w=(new Date(k+'T12:00:00').getDay()+6)%7;wd[w]+=i;wn[w]++});
+ const wk=[];let m0=monOf(ymd(new Date()));for(let i=7;i>=0;i--){const s=addD(m0,-7*i),e=addD(s,6);wk.push({l:+s.slice(8)+'/'+ +s.slice(5,7),v:Object.keys(S.rev).filter(k=>k>=s&&k<=e).reduce((t,k)=>t+Object.entries(S.rev[k]).filter(([x])=>x!=='_o').reduce((u,[,v])=>u+(+v||0),0),0)})}
+ const cat={};top.forEach(x=>{const k=catOf(x.d),f=fcInfo(x.d),o=cat[k]||(cat[k]={c:0,n:0});if(isFinite(f.cost)&&f.net){o.c+=f.cost*x.n;o.n+=f.net*x.n}});
+ const tgt=+S.p.fcT||30;
+ return`<div class="card"><div class="pRow" style="margin:0"><div><b style="font-size:18px">KPI</b><div class="mu">Indicatori di vendita e produttività</div></div><div class="row" style="margin:0"><label>Da <input type="month" value="${kF}" onchange="kF=this.value||kF;R()"></label><label>A <input type="month" value="${kT}" onchange="kT=this.value||kT;R()"></label></div></div></div>
+ <div class="pcKs">${k_('Incasso',eur(inc),st.length+' conti chiusi in cassa')}${k_('Coperti',cop.toLocaleString('it-IT'),'in sala')}${k_('Spesa media a coperto',cop?eur(sala.reduce((s,r)=>s+r.tot,0)/cop):'–','conti di sala, coperto compreso')}${k_('Scontrino medio',st.length?eur(st.reduce((s,r)=>s+r.tot,0)/st.length):'–','tutti i conti')}${k_('Ricavo per ora lavorata',ore?eur(inc/ore):'–',ore?ore.toFixed(0)+' ore dai turni':'servono i turni in Personale')}</div>
+ <div class="kG"><div class="card"><b>Incasso medio per giorno della settimana</b>${wd.some(v=>v)?barSvg(['Lun','Mar','Mer','Gio','Ven','Sab','Dom'],[{n:'Media',c:'var(--c1)',v:wd.map((v,i)=>wn[i]?v/wn[i]:0)}],190):'<div class="mu">Nessun incasso nel periodo.</div>'}</div>
+ <div class="card"><b>Incasso delle ultime 8 settimane</b>${wk.some(x=>x.v)?barSvg(wk.map(x=>x.l),[{n:'Incasso',c:'var(--ac)',v:wk.map(x=>x.v)}],190):'<div class="mu">Nessun incasso nelle ultime settimane.</div>'}</div></div>
+ <div class="kG"><div class="card sc"><b>Piatti più venduti</b> <span class="mu">${pz} piatti nel periodo</span><table style="margin-top:6px"><tr><th>Piatto</th><th style="text-align:right">Q.tà</th><th style="text-align:right">Ricavo</th></tr>${tq.map(x=>`<tr><td>${esc(x.d.name)}</td><td style="text-align:right">${x.n}</td><td style="text-align:right">${eur(x.ric)}</td></tr>`).join('')||'<tr><td colspan="3" class="mu">Nessun piatto venduto.</td></tr>'}</table></div>
+ <div class="card sc"><b>Piatti che fanno più margine</b> <span class="mu">margine × quantità, senza IVA</span><table style="margin-top:6px"><tr><th>Piatto</th><th style="text-align:right">Margine totale</th><th style="text-align:right">FC</th></tr>${tm_.map(x=>`<tr><td>${esc(x.d.name)}</td><td style="text-align:right" class="ok">${eur(x.mg)}</td><td style="text-align:right" class="${isFinite(x.fc)&&x.fc*100>tgt?'bad':''}">${isFinite(x.fc)?(x.fc*100).toFixed(1).replace('.',',')+'%':'–'}</td></tr>`).join('')||'<tr><td colspan="3" class="mu">Nessun piatto venduto.</td></tr>'}</table></div></div>
+ <div class="card sc"><b>Food cost teorico per categoria</b> <span class="mu">pesato sulle quantità vendute · obiettivo ${tgt}%</span><table style="margin-top:6px"><tr><th>Categoria</th><th style="text-align:right">Costo merce</th><th style="text-align:right">Venduto (senza IVA)</th><th style="text-align:right">Food cost</th></tr>${Object.entries(cat).sort((x,y)=>y[1].n-x[1].n).map(([k,o])=>{const f=o.n?o.c/o.n*100:NaN;return`<tr><td>${esc(catLab(k))}</td><td style="text-align:right">${eur(o.c)}</td><td style="text-align:right">${eur(o.n)}</td><td style="text-align:right"><span class="pl ${f<=tgt?'ok':'bad'}">${isFinite(f)?f.toFixed(1).replace('.',',')+'%':'–'}</span></td></tr>`}).join('')||'<tr><td colspan="4" class="mu">Nessun dato.</td></tr>'}</table></div>`}
+
+/* ===== AI Advisor (consigli automatici) ===== */
+function advice(){const out=[],now=ymd(new Date()),m=now.slice(0,7),pm=mAdd(m,-1),p2=mAdd(m,-2),tgt=+S.p.pcT||62,fcT=+S.p.fcT||30,add=(l,t,d,go,gl)=>out.push({l,t,d,go,gl});
+ const c=cogsFix(ceDer(ceData(m,m)),m,m);
+ if(c.R>0){const pc=c.PC/c.R*100,lb=c.lab/c.R*100;
+  if(pc>tgt)add('bad','Prime cost al '+pc.toFixed(1).replace('.',',')+'% questo mese','È sopra il tuo obiettivo del '+tgt+'%. Ogni punto in più vale circa '+eur(c.R/100)+' di margine perso su questo mese. Guarda prima i piatti con food cost alto e i giorni con labor alto.','prime','Apri Prime Cost');
+  else add('ok','Prime cost sotto controllo','Questo mese sei al '+pc.toFixed(1).replace('.',',')+'%, entro l\'obiettivo del '+tgt+'%.','prime','Apri Prime Cost');
+  if(lb>38)add('bad','Costo del personale alto: '+lb.toFixed(1).replace('.',',')+'% degli incassi','Sopra il 35-38% il margine si assottiglia molto. Controlla i turni nei giorni con meno incasso (vedi Prime Cost → Analisi labor cost).','pers','Apri Turni');
+  else if(lb>33)add('warn','Costo del personale al limite: '+lb.toFixed(1).replace('.',',')+'%','Tienilo d\'occhio: la soglia di attenzione tipica è intorno al 33-35%.','pers','Apri Turni')}
+ else add('info','Nessun incasso registrato questo mese','Chiudi i conti dalla Cassa o inserisci gli incassi in Finanza → Registro incassi: quasi tutte le analisi partono da lì.','cassa','Apri Cassa');
+ const a30=addD(now,-30),q={};Object.keys(S.vend).filter(k=>k>=a30).forEach(k=>Object.entries(S.vend[k]).forEach(([id,n])=>q[id]=(q[id]||0)+(+n||0)));
+ const hi=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off).map(d=>({d,x:fcInfo(d),n:q[d.id]||0})).filter(o=>isFinite(o.x.fc)&&o.x.fc*100>(hasV(o.d.fcT)?+o.d.fcT:fcT)).sort((x,y)=>y.n-x.n);
+ if(hi.length)add('warn',hi.length+' piatti con food cost sopra l\'obiettivo',hi.slice(0,5).map(o=>esc(o.d.name)+' '+(o.x.fc*100).toFixed(1).replace('.',',')+'%'+(o.n?' ('+o.n+' venduti in 30 gg)':'')+(isFinite(o.x.pminI)?' → prezzo minimo '+eur(o.x.pminI):'')).join(' · '),'piatti','Apri Distinte base');
+ const neg=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off&&+d.sale>0).filter(d=>{const x=fcInfo(d);return isFinite(x.mg)&&x.mg<=0});
+ if(neg.length)add('bad',neg.length+' piatti venduti in perdita',neg.slice(0,6).map(d=>esc(d.name)).join(', ')+': il costo delle materie prime supera il prezzo senza IVA.','piatti','Apri Distinte base');
+ if(Object.keys(q).length){const dead=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off&&!q[d.id]);if(dead.length)add('info',dead.length+' piatti in vendita mai venduti negli ultimi 30 giorni',dead.slice(0,8).map(d=>esc(d.name)).join(', ')+'. Valuta se toglierli dal menu o rilanciarli: un menu più corto riduce scorte e sprechi.','piatti','Apri Distinte base')}
+ magInit();const st=stock(),low=magItems().filter(x=>{const mn=+S.mag.min[x.id]||0;return mn&&st[x.id].q<mn});
+ if(low.length)add('warn',low.length+' prodotti sotto la scorta minima',low.slice(0,8).map(x=>esc(x.name)+' '+mqty(st[x.id].q,x.u)).join(' · '),'mag','Apri Magazzino');
+ const fb=fbAnalysis(m,m).rows.food;if(fb&&fb.teo>0&&fb.cr-fb.teo>fb.teo*0.05)add('warn','Consumo reale di food più alto del teorico','Questo mese sono usciti '+eur(fb.cr-fb.teo)+' di merce in più rispetto alle ricette dei piatti venduti ('+((fb.cr/fb.teo-1)*100).toFixed(1).replace('.',',')+'%). Cause tipiche: sprechi, porzioni abbondanti, piatti non battuti in cassa.','prime','Apri analisi consumi');
+ const rows=costsOn(),sp=mm=>{const o={};rows.filter(r=>r.d.slice(0,7)===mm).forEach(r=>o[r.f]=(o[r.f]||0)+r.a);return o},A=sp(pm),B=sp(p2);
+ const up=Object.keys(A).filter(f=>B[f]>0&&A[f]-B[f]>100&&A[f]/B[f]>1.25).sort((x,y)=>(A[y]-B[y])-(A[x]-B[x]));
+ if(up.length)add('warn','Spesa in aumento da '+up.length+' fornitori',up.slice(0,5).map(f=>esc(f)+': '+eur(B[f])+' → '+eur(A[f])).join(' · ')+' ('+esc(mlab(p2))+' → '+esc(mlab(pm))+'). Controlla se sono aumentati i prezzi o le quantità.','costi','Apri Registro spese');
+ const noP=S.ing.filter(i=>!i.auto&&!i.price&&S.dishes.some(d=>d.lines.some(l=>l.ing===i.id)));
+ if(noP.length)add('info',noP.length+' ingredienti usati nelle ricette senza prezzo',noP.slice(0,8).map(i=>esc(i.name)).join(', ')+': il food cost di quei piatti risulta più basso del vero.','ing','Apri Ingredienti');
+ const nc=[...new Set(rows.map(r=>r.f))].filter(f=>!(S.ceCat||{})[ceKey(f)]);
+ if(nc.length>2)add('info',nc.length+' fornitori da classificare','Nel conto economico finiscono tutti in «Materia prima food». Assegna la voce giusta (bevande, pulizia, manutenzioni…) in fondo al Conto economico.','ce','Apri Conto economico');
+ const pr=(S.pren||[]).filter(p=>p.d===now&&(p.st||'conf')==='conf');if(pr.length)add('info','Oggi '+pr.length+' prenotazioni, '+pr.reduce((s,p)=>s+(+p.cop||0),0)+' coperti',pr.filter(p=>!p.tav).length?pr.filter(p=>!p.tav).length+' senza tavolo assegnato.':'Tutte con tavolo assegnato.','pren','Apri Prenotazioni');
+ const ord={bad:0,warn:1,info:2,ok:3};return out.sort((x,y)=>ord[x.l]-ord[y.l])}
+function pAdv(){const L=advice(),ic={bad:'!',warn:'!',info:'i',ok:'✓'};
+ return`<div class="card"><b style="font-size:18px">AI Advisor</b><div class="mu" style="margin-top:4px">Legge i numeri del locale (cassa, ricette, magazzino, turni, fatture) e indica dove intervenire. Sono consigli automatici calcolati su regole: non usano un modello di intelligenza artificiale e non inviano i dati da nessuna parte.</div></div>
+ ${L.map(a=>`<div class="card adv ${a.l}"><span class="advI">${ic[a.l]}</span><div style="flex:1;min-width:0"><b>${a.t}</b><div class="mu" style="margin-top:3px">${a.d}</div></div>${a.go?`<button class="b" onclick="navGo('${a.go}')">${a.gl}</button>`:''}</div>`).join('')}`}
+
+/* ===== Dati di esempio per Personale, Cassa, Magazzino, Prenotazioni ===== */
+function exOps(){if(!S.exOn||S.exOps)return;persInit();posInit();magInit();let sd=7;const rnd=()=>{sd=(sd*16807)%2147483647;return(sd-1)/2147483646},pick=a=>a[Math.floor(rnd()*a.length)];
+ const SF=[['Rossi Paolo','manager',22,false],['Greco Anna','cuoco',18,false],['Moretti Sara','pizzaiolo',17,false],['Conti Luca','cameriere',15,true],['Ferri Giulia','cameriere',15,true],['Diallo Amadou','lavapiatti',12,false]];
+ const ids=SF.map(([n,r,c,k],i)=>{const id='ex_s'+i;if(!S.staff.some(s=>s.id===id))S.staff.push({id,nome:n,ruolo:r,costo:c,cassa:k,attivo:true,col:'',ex:1});return id});
+ const today=ymd(new Date()),start=addD(today,-27),ds=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off&&+d.sale>0&&!d.peso);
+ for(let k=start;k<=addD(monOf(today),6);k=addD(k,1)){const w=(new Date(k+'T12:00:00').getDay()+6)%7;if(w===0)continue;const we=w>=4;
+  const T=[[ids[1],'17:30','23:00'],[ids[2],'18:00','23:00'],[ids[3],'18:30','23:30'],[ids[5],'19:00','23:30']];if(we)T.push([ids[0],'18:00','23:30'],[ids[4],'19:00','23:30']);if(w>=5)T.push([ids[4],'12:00','15:00'],[ids[1],'11:00','15:00']);
+  T.forEach(([sid,a,b])=>S.turni.push({id:shId(),sid,d:k,a,b,p:0,ex:1}));
+  if(k>=today||!ds.length)continue;const n=we?Math.round(36+rnd()*12):Math.round(24+rnd()*8);
+  for(let j=0;j<n;j++){const cop=2+Math.floor(rnd()*3),righe=[];for(let x=0;x<cop+Math.ceil(cop*.7+rnd()*2);x++){const d=pick(ds),l=righe.find(r=>r.d===d.id);if(l)l.q++;else righe.push({id:'x'+j+'_'+x,d:d.id,n:d.name,p:+d.sale,q:1,u:1,rm:[],add:[],note:'',tip:tipOf(d)})}
+   const tipo=rnd()<.82?'sala':rnd()<.5?'asporto':'delivery',coperto=tipo==='sala'?cop*(+S.p.coperto||0):0,tot=r2(righe.reduce((s,l)=>s+l.p*l.q,0)+coperto),hh=18+Math.floor(rnd()*4),ts=new Date(k+'T'+String(hh).padStart(2,'0')+':'+String(Math.floor(rnd()*60)).padStart(2,'0')+':00').toISOString();
+   const rec={id:'exr'+k+j,ts,k,tipo,tavN:tipo==='sala'?'T'+(1+Math.floor(rnd()*10)):'',nome:tipo==='sala'?'':'Cliente',cam:tipo==='sala'?pick(['Conti Luca','Ferri Giulia']):'',cop:tipo==='sala'?cop:0,coperto,sconto:0,righe,tot,pag:rnd()<.6?'carta':'contanti',ch:tipo==='sala'?'tavoli':tipo==='asporto'?'asporto':'justeat',ex:1};
+   posApply(rec,1);S.storico.push(rec)}}
+ S.storico.sort((a,b)=>b.ts.localeCompare(a.ts));
+ const days=salesUse(),U={};Object.keys(days).filter(k=>k>=start).forEach(k=>Object.entries(days[k]).forEach(([id,v])=>U[id]=(U[id]||0)+v));
+ const t0=addD(start,-1)+'T23:59:00.000Z';
+ Object.entries(U).forEach(([id,u])=>{if(!magItems().some(x=>x.id===id))return;const q0=+(u*.5).toFixed(3);S.mag.mov.push({id:'exm0'+id,ts:t0,at:t0,ing:id,q:q0,t:'inventario',note:'',ex:1});
+  for(let w=0;w<4;w++)S.mag.mov.push({id:'exmc'+w+id,ts:addD(start,w*7+1)+'T09:00:00.000Z',ing:id,q:+(u/4).toFixed(3),t:'carico',note:'consegna settimanale',ex:1})});
+ const yd=addD(today,-1),t1=yd+'T23:59:00.000Z';
+ Object.keys(U).slice(0,6).forEach((id,i)=>{if(i<2)S.mag.mov.push({id:'exms'+id,ts:addD(today,-10)+'T15:00:00.000Z',ing:id,q:-(+(U[id]*.04).toFixed(3)),t:'scarico',note:i?'merce scaduta':'caduta in cucina',ex:1})});
+ Object.keys(U).forEach(id=>{if(!magItems().some(x=>x.id===id))return;const q=qtyAt(id,t1,days),r=+(Math.max(0,q-U[id]*.03)).toFixed(3);S.mag.mov.push({id:'exm1'+id,ts:t1,at:t1,ing:id,q:r,t:'inventario',note:'',ex:1});S.mag.inv[id]={q:r,at:t1,ex:1}});
+ const tb=(S.sale[0]&&S.sale[0].tables)||[];[['13:00','Bassi',4,1],['20:00','Neri',2,2],['20:30','Fontana',6,3],['21:00','Marchi',4,0]].forEach(([h,n,c,t],i)=>S.pren.push({id:'exp'+i,d:today,h,nome:n,tel:'',cop:c,tav:t&&tb[t]?tb[t].id:'',note:i===2?'compleanno':'',st:'conf',ex:1}));
+ S.pren.push({id:'exp9',d:addD(today,1),h:'20:30',nome:'Galli',tel:'',cop:5,tav:'',note:'',st:'conf',ex:1});
+ S.exOps=1}
+function exOpsRemove(){(S.storico||[]).filter(r=>r.ex).forEach(r=>posApply(r,-1));if(S.storico)S.storico=S.storico.filter(r=>!r.ex);
+ if(S.staff)S.staff=S.staff.filter(s=>!s.ex);if(S.turni)S.turni=S.turni.filter(t=>!t.ex);if(S.pren)S.pren=S.pren.filter(p=>!p.ex);
+ if(S.mag){S.mag.mov=S.mag.mov.filter(m=>!m.ex);Object.keys(S.mag.inv).forEach(k=>{if(S.mag.inv[k].ex)delete S.mag.inv[k]})}delete S.exOps}
+
+/* ===== Importa / esporta Excel e CSV ===== */
+const XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+async function xlsLib(){if(!window.XLSX)await loadScript(XLSX_URL);if(!window.XLSX)throw new Error('xlsx');return window.XLSX}
+const nrm=s=>String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9%]+/g,' ').trim();
+const numIt=v=>{if(v==null||v==='')return null;if(typeof v==='number')return v;const s=String(v).replace(/[€\s]/g,'').replace(/%$/,'');const t=/,\d{1,3}$/.test(s)&&!/\.\d{3},/.test(s)?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');const n=parseFloat(t);return isFinite(n)?n:null};
+const siNo=v=>{const s=nrm(v);if(!s)return null;return['si','s','yes','y','1','true','x','vero'].includes(s)};
+const UNIT_L={kg:'kg',pz:'pezzo',conf:'confezione'};
+const unitOf=v=>{const s=nrm(v);if(!s)return null;if(/^(pz|pezz|pezzo|pezzi|n|nr|cad|unit)/.test(s))return'pz';if(/^conf|^pacc|^scatol|^bott|^latt/.test(s))return'conf';if(/^(kg|chil|kilo|g|gr|gramm|l|lt|litr)/.test(s))return'kg';return null};
+const catKey=v=>{const s=nrm(v);if(!s)return null;const f=PC.find(([k,l])=>nrm(k)===s||nrm(l)===s)||PC.find(([k,l])=>nrm(l).startsWith(s)||s.startsWith(nrm(k)));if(f)return f[0];
+ if(/pizz|pinsa|calzon/.test(s))return'pizze';if(/antipast|stuzzich/.test(s))return'antipasti';if(/primi|pasta|risott/.test(s))return'primi';if(/secondi|carne|pesce|grigli/.test(s))return'secondi';if(/contorn|insalat/.test(s))return'contorni';if(/panin|hamburg|burger|piadin/.test(s))return'panini';if(/fritt|sfiz/.test(s))return'fritti';if(/dolc|dessert/.test(s))return'dessert';if(/bevand|bibit|vin|birr|bar|acqu|caff|drink|cocktail|amar/.test(s))return'bevande';if(/sug|prepar|salse|fond/.test(s))return'sughi';return'altri'};
+const tipKey=v=>{const s=nrm(v);if(!s)return null;const f=TIP.find(([k,l])=>nrm(k)===s||nrm(l)===s);if(f)return f[0];if(/vin/.test(s))return'vino';if(/birr/.test(s))return'birra';if(/acqu/.test(s))return'acqua';if(/caff/.test(s))return'caffe';if(/alcol|amar|liquor|distill/.test(s))return'alcolici';if(/bibit|bevand|analc|soft/.test(s))return'bibite';if(/food|cibo|cucina/.test(s))return'food';return'altro'};
+const COLS={
+ ing:[['Nome','name'],['Unità prezzo (kg / pezzo / confezione)','unit'],['Prezzo € senza IVA','price'],['Grammi confezione','conf'],['Scarto grammi','sw'],['Scarto su grammi','sg'],['IVA %','iva'],['Tipologia','tip'],['Scorta minima','min']],
+ dish:[['Nome','name'],['Categoria','cat'],['Tipologia','tip'],['Prezzo vendita € IVA inclusa','sale'],['IVA %','iva'],['In vendita (Sì/No)','on'],['Vendita al peso (Sì/No)','peso'],['Food cost obiettivo %','fcT'],['Porzione g (preparazioni)','por'],['Resa kg (preparazioni)','resa'],['Formato pasta','pf'],['Grammi pasta','pg'],['Costo materie prime € (calcolato)','x_cost'],['Food cost % (calcolato)','x_fc']],
+ rec:[['Piatto','dish'],['Ingrediente','ing'],['Quantità','qty'],['Unità (g o pz)','u']]};
+function xlsRows(kind){if(kind==='ing')return S.ing.filter(i=>!i.auto).sort((a,b)=>a.name.localeCompare(b.name)).map(i=>[i.name,UNIT_L[i.unit]||'kg',i.price??'',i.unit==='conf'?(i.conf??''):'',i.sw??'',i.sg??'',+i.iva||10,(TIP.find(t=>t[0]===(i.tip||'food'))||[0,'Food'])[1],(S.mag&&S.mag.min[i.id])||'']);
+ if(kind==='dish')return S.dishes.slice().sort((a,b)=>catOf(a).localeCompare(catOf(b))||a.name.localeCompare(b.name)).map(d=>{const pre=d.cat==='sughi',x=pre?null:fcInfo(d),f=d.pf&&S.fmt.find(z=>z.id===d.pf);
+  return[d.name,catLab(catOf(d)),(TIP.find(t=>t[0]===tipOf(d))||[0,''])[1],pre?'':(+d.sale||0),hasV(d.iva)?+d.iva:'',d.off?'No':'Sì',d.peso?'Sì':'No',hasV(d.fcT)?+d.fcT:'',pre?(d.por||''):'',pre?(d.resa||''):'',f?f.name:'',d.pg||'',pre?r2(sInfo(d).c):(isFinite(x.cost)?r2(x.cost):''),pre||!isFinite(x.fc)?'':r2(x.fc*100)]});
+ const out=[];S.dishes.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(d=>d.lines.forEach(l=>{const i=ing(l.ing);if(!i)return;out.push([d.name,i.name,+l.qty||0,i.unit==='pz'||i.apz?'pz':'g'])}));return out}
+const SHEET_N={ing:'Ingredienti',dish:'Piatti',rec:'Ricette'};
+async function xlsExport(fmt,only){let X;try{X=await xlsLib()}catch(e){return note('Non riesco a caricare il modulo Excel: controlla la connessione e riprova.')}
+ const kinds=only?[only]:['ing','dish','rec'],stamp=td(),base='gestionale_'+(S.p.locale?nrm(S.p.locale).replace(/ /g,'_')+'_':'');
+ const sheet=k=>X.utils.aoa_to_sheet([COLS[k].map(c=>c[0])].concat(xlsRows(k)));
+ try{if(fmt==='csv'){kinds.forEach(k=>{const csv=X.utils.sheet_to_csv(sheet(k),{FS:';'});const b=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=base+SHEET_N[k].toLowerCase()+'_'+stamp+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)})}
+  else{const wb=X.utils.book_new();kinds.forEach(k=>{const ws=sheet(k);ws['!cols']=COLS[k].map(c=>({wch:Math.max(12,Math.min(38,c[0].length+2))}));X.utils.book_append_sheet(wb,ws,SHEET_N[k])});X.writeFile(wb,base+(only?SHEET_N[only].toLowerCase()+'_':'')+stamp+'.xlsx')}
+  note('File salvato nei download.')}catch(e){note('Esportazione non riuscita: '+e.message)}}
+async function xlsTemplate(){let X;try{X=await xlsLib()}catch(e){return note('Non riesco a caricare il modulo Excel: controlla la connessione e riprova.')}
+ const wb=X.utils.book_new(),ex={ing:[['Mozzarella fiordilatte','kg',7.2,'','','',4,'Food',''],['Passata di pomodoro','confezione',1.1,700,'','',4,'Food',''],['Pane per hamburger','pezzo',0.45,'','','',4,'Food','']],dish:[['Margherita','Pizze','Food',7,10,'Sì','No',30,'','','','','',''],['Sugo al pomodoro','Preparazioni','Food','','','Sì','No','',120,2.5,'','','','']],rec:[['Margherita','Mozzarella fiordilatte',100,'g'],['Margherita','Sugo al pomodoro',80,'g'],['Sugo al pomodoro','Passata di pomodoro',3000,'g']]};
+ ['ing','dish','rec'].forEach(k=>{const ws=X.utils.aoa_to_sheet([COLS[k].map(c=>c[0])].concat(ex[k]));ws['!cols']=COLS[k].map(c=>({wch:Math.max(12,Math.min(38,c[0].length+2))}));X.utils.book_append_sheet(wb,ws,SHEET_N[k])});
+ X.writeFile(wb,'modello_importazione_gestionale.xlsx')}
+/* lettura */
+function detectKind(name,hdr){const n=nrm(name),h=hdr.map(nrm);if(/ingred/.test(n)&&!h.some(x=>/piatt/.test(x)))return'ing';if(/ricett|distint/.test(n))return'rec';if(/piatt|menu|prodott|articol|listin/.test(n))return'dish';
+ if(h.some(x=>/piatt|prodott/.test(x))&&h.some(x=>/ingred/.test(x)))return'rec';if(h.some(x=>/categor|vendita/.test(x)))return'dish';if(h.some(x=>/^nome|ingred|descriz|articol/.test(x))&&h.some(x=>/prezz|costo/.test(x)))return'ing';return null}
+function mapHdr(kind,hdr){const h=hdr.map(nrm),find=(...re)=>h.findIndex(x=>re.some(r=>r.test(x)));
+ if(kind==='ing')return{name:find(/^nome/,/^ingred/,/descriz/,/articol/,/prodott/),unit:find(/^unita/,/unita prezzo/,/^um$/,/misura/),price:find(/^prezzo/,/^costo/),conf:find(/confez/,/^grammi conf/,/peso conf/),sw:find(/^scarto gr/,/^scarto g/,/^scarto$/),sg:find(/scarto su/),iva:find(/^iva/,/aliquota/),tip:find(/tipolog/),min:find(/scorta/)};
+ if(kind==='dish')return{name:find(/^nome/,/^piatt/,/prodott/,/articol/,/descriz/),cat:find(/categor/,/reparto/),tip:find(/tipolog/),sale:find(/vendita/,/^prezzo/),iva:find(/^iva/,/aliquota/),on:find(/in vendita/,/attiv/,/disponib/),peso:find(/peso/),fcT:find(/obiettiv/,/desiderat/),por:find(/porzion/),resa:find(/^resa/),pf:find(/formato/),pg:find(/grammi pasta/)};
+ return{dish:find(/^piatt/,/prodott/,/ricett/),ing:find(/^ingred/,/component/,/materia/),qty:find(/quantit/,/^q ta/,/^qta/,/grammi/,/dose/),u:find(/^unita/,/^um$/,/misura/)}}
+async function xlsRead(file){const X=await xlsLib(),buf=await file.arrayBuffer();let wb;
+ if(/\.csv$|\.txt$/i.test(file.name)){let txt=new TextDecoder('utf-8').decode(buf);if(txt.includes('\uFFFD'))txt=new TextDecoder('windows-1252').decode(buf);const fs=(txt.split('\n')[0].match(/;/g)||[]).length>=(txt.split('\n')[0].match(/,/g)||[]).length?';':',';wb=X.read(txt.replace(/^﻿/,''),{type:'string',FS:fs,raw:true})}
+ else wb=X.read(buf,{type:'array'});
+ const out=[];wb.SheetNames.forEach(n=>{const rows=X.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''}).filter(r=>r.some(c=>String(c).trim()!==''));if(rows.length<1)return;const hdr=rows[0].map(String),kind=detectKind(/\.csv$/i.test(file.name)?file.name:n,hdr);out.push({sheet:n,kind,hdr,map:kind?mapHdr(kind,hdr):null,rows:rows.slice(1)})});return out}
+function xlsPlan(sheets,opt){const P={ing:{nw:[],up:[]},dish:{nw:[],up:[]},rec:{dishes:{},miss:new Set()},skip:[],unknown:[]};
+ const ingBy={};S.ing.forEach(i=>ingBy[nrm(i.name)]=i);const dishBy={};S.dishes.forEach(d=>dishBy[nrm(d.name)]=d);const newIng={},newDish={};
+ sheets.forEach(sh=>{if(!sh.kind){P.unknown.push(sh.sheet);return}const m=sh.map,g=(r,k)=>m[k]>=0?r[m[k]]:'';
+  if(m[sh.kind==='rec'?'dish':'name']<0){P.unknown.push(sh.sheet+' (manca la colonna del nome)');return}
+  sh.rows.forEach((r,ix)=>{const row=ix+2;
+   if(sh.kind==='ing'){const name=cap(String(g(r,'name')).trim());if(!name)return;const o={name,unit:unitOf(g(r,'unit')),price:numIt(g(r,'price')),conf:numIt(g(r,'conf')),sw:numIt(g(r,'sw')),sg:numIt(g(r,'sg')),iva:numIt(g(r,'iva')),tip:tipKey(g(r,'tip')),min:numIt(g(r,'min'))};
+    if(o.unit==='conf'&&!o.conf){P.skip.push(sh.sheet+' riga '+row+': «'+name+'» è a confezione ma mancano i grammi della confezione');o.unit=null}
+    const ex=ingBy[nrm(name)];if(ex&&ex.auto){P.skip.push(sh.sheet+' riga '+row+': «'+name+'» è calcolato dal gestionale (preparazione o impasto), non si importa');return}
+    if(ex)P.ing.up.push([ex,o]);else if(!newIng[nrm(name)]){newIng[nrm(name)]=o;P.ing.nw.push(o)}}
+   else if(sh.kind==='dish'){const name=cap(String(g(r,'name')).trim());if(!name)return;const o={name,cat:catKey(g(r,'cat')),tip:tipKey(g(r,'tip')),sale:numIt(g(r,'sale')),iva:numIt(g(r,'iva')),on:siNo(g(r,'on')),peso:siNo(g(r,'peso')),fcT:numIt(g(r,'fcT')),por:numIt(g(r,'por')),resa:numIt(g(r,'resa')),pf:String(g(r,'pf')).trim(),pg:numIt(g(r,'pg'))};
+    const ex=dishBy[nrm(name)];if(ex)P.dish.up.push([ex,o]);else if(!newDish[nrm(name)]){newDish[nrm(name)]=o;P.dish.nw.push(o)}}
+   else{const dn=String(g(r,'dish')).trim(),inn=String(g(r,'ing')).trim();if(!dn&&!inn)return;if(!dn||!inn){P.skip.push(sh.sheet+' riga '+row+': manca il piatto o l\'ingrediente');return}
+    let q=numIt(g(r,'qty'));const u=nrm(g(r,'u'));if(q==null){P.skip.push(sh.sheet+' riga '+row+': quantità mancante per «'+inn+'»');return}if(/^(kg|chil|l$|lt|litr)/.test(u))q*=1000;
+    const k=nrm(dn);(P.rec.dishes[k]=P.rec.dishes[k]||{name:cap(dn),lines:[]}).lines.push({ing:inn,q});if(!ingBy[nrm(inn)]&&!newIng[nrm(inn)])P.rec.miss.add(cap(inn))}})});
+ P.rec.newDishes=Object.values(P.rec.dishes).filter(d=>!dishBy[nrm(d.name)]&&!newDish[nrm(d.name)]).map(d=>d.name);
+ return P}
+function xlsApply(P,opt){const ingBy={};S.ing.forEach(i=>ingBy[nrm(i.name)]=i);let n={ingN:0,ingU:0,dishN:0,dishU:0,rec:0};
+ const setIng=(i,o)=>{if(o.unit)i.unit=o.unit;if(o.price!=null&&(opt.prices||i.price==null))i.price=o.price;if(o.conf!=null)i.conf=o.conf;if(o.sw!=null)i.sw=o.sw;if(o.sg!=null)i.sg=o.sg;if(o.iva!=null)i.iva=o.iva;if(o.tip)i.tip=o.tip;if(o.min!=null){magInit();S.mag.min[i.id]=o.min}};
+ P.ing.up.forEach(([i,o])=>{setIng(i,o);n.ingU++});
+ P.ing.nw.forEach(o=>{const i={id:'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:o.name,price:null,unit:'kg',iva:10};setIng(i,Object.assign({},o,{price:o.price}));S.ing.push(i);ingBy[nrm(i.name)]=i;n.ingN++});
+ const setDish=(d,o)=>{if(o.cat){d.cat=o.cat;if(!['pizze','panini'].includes(o.cat)&&d.imp==null)d.imp='none'}if(o.tip)d.tip=o.tip;if(o.sale!=null&&(opt.prices||!+d.sale))d.sale=o.sale;if(o.iva!=null)d.iva=o.iva;if(o.on!=null)d.off=!o.on;if(o.peso!=null)d.peso=o.peso;if(o.fcT!=null)d.fcT=o.fcT;if(o.por!=null)d.por=o.por;if(o.resa!=null)d.resa=o.resa;
+  if(o.pf){const f=S.fmt.find(z=>nrm(z.name)===nrm(o.pf));if(f)d.pf=f.id}if(o.pg!=null)d.pg=o.pg};
+ const dishBy={};S.dishes.forEach(d=>dishBy[nrm(d.name)]=d);
+ P.dish.up.forEach(([d,o])=>{setDish(d,o);n.dishU++});
+ P.dish.nw.concat(P.rec.newDishes.map(name=>({name}))).forEach(o=>{const d={id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:o.name,sale:0,lines:[],cat:o.cat||'altri'};if(!['pizze','panini'].includes(d.cat))d.imp='none';setDish(d,o);S.dishes.push(d);dishBy[nrm(d.name)]=d;n.dishN++});
+ syncSugi();syncImps();S.ing.forEach(i=>ingBy[nrm(i.name)]=i);
+ Object.values(P.rec.dishes).forEach(r=>{const d=dishBy[nrm(r.name)];if(!d)return;const L=[];r.lines.forEach(l=>{let i=ingBy[nrm(l.ing)];if(!i){i={id:'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:cap(l.ing),price:null,unit:'kg',iva:10};S.ing.push(i);ingBy[nrm(i.name)]=i;n.ingN++}
+  if(i.auto&&i.sugo===d.id)return;const ex=L.find(x=>x.ing===i.id);if(ex)ex.qty+=l.q;else L.push({ing:i.id,qty:l.q})});d.lines=L;n.rec++});
+ return n}
+function xlsImport(files){const f=files&&files[0];if(!f)return;xlsRead(f).then(sheets=>{if(!sheets.some(s=>s.kind))return note('Non riconosco il contenuto del file. Usa le intestazioni del modello (scaricalo con «Scarica il modello vuoto») oppure chiama i fogli Ingredienti, Piatti e Ricette.');
+  const P=xlsPlan(sheets),recN=Object.keys(P.rec.dishes).length;
+  const li=(t,arr)=>arr.length?`<li>${t}: <b>${arr.length}</b> <span class="mu">${esc(arr.slice(0,6).join(', '))}${arr.length>6?'…':''}</span></li>`:'';
+  const ov=posDlg(`<b style="font-size:17px">Importa da «${esc(f.name)}»</b><div class="mu">Fogli letti: ${sheets.map(s=>esc(s.sheet)+(s.kind?' → '+SHEET_N[s.kind]:' (ignorato)')).join(' · ')}</div>
+  <ul style="margin:10px 0;padding-left:18px;line-height:1.7">${li('Ingredienti nuovi',P.ing.nw.map(o=>o.name))}${li('Ingredienti da aggiornare',P.ing.up.map(x=>x[0].name))}${li('Piatti nuovi',P.dish.nw.map(o=>o.name).concat(P.rec.newDishes))}${li('Piatti da aggiornare',P.dish.up.map(x=>x[0].name))}${recN?`<li>Ricette da sostituire: <b>${recN}</b> <span class="mu">gli ingredienti di questi piatti vengono rimpiazzati con quelli del file</span></li>`:''}${li('Ingredienti delle ricette non presenti (verranno creati senza prezzo)',[...P.rec.miss])}</ul>
+  ${P.skip.length?`<details><summary class="mu">${P.skip.length} righe con problemi</summary><div class="mu" style="font-size:13px;max-height:140px;overflow:auto">${P.skip.slice(0,50).map(esc).join('<br>')}</div></details>`:''}
+  ${P.unknown.length?`<div class="mu" style="margin-top:6px">Fogli non riconosciuti: ${esc(P.unknown.join(', '))}</div>`:''}
+  <label style="margin-top:10px"><input type="checkbox" id="xp" checked> Aggiorna anche i prezzi già presenti (ingredienti e prezzi di vendita)</label>
+  <div class="mu" style="margin-top:6px">Prima di importare conviene scaricare un backup da Parametri → Copia e importa i dati.</div>
+  <div class="row" style="margin-top:12px"><button class="b" id="cx">Annulla</button><button class="b pPri" id="ok">Importa</button></div>`,520);
+  ov.querySelector('#cx').onclick=()=>ov.remove();ov.querySelector('#ok').onclick=()=>{const n=xlsApply(P,{prices:ov.querySelector('#xp').checked});ov.remove();R();note('Importazione completata: '+n.ingN+' ingredienti nuovi, '+n.ingU+' aggiornati, '+n.dishN+' piatti nuovi, '+n.dishU+' aggiornati, '+n.rec+' ricette.')}})
+ .catch(e=>note(e.message==='xlsx'||/ocrload/.test(e.message)?'Non riesco a caricare il modulo Excel: controlla la connessione e riprova.':'Non riesco a leggere il file: '+e.message))}
+function pXls(){return`<div class="card"><b style="font-size:18px">Importa ed esporta (Excel e CSV)</b><div class="mu" style="margin-top:4px">Per scambiare ingredienti, piatti e ricette con altri programmi o per modificarli in Excel. Il file Excel ha tre fogli: <b>Ingredienti</b>, <b>Piatti</b>, <b>Ricette</b> (una riga per ogni ingrediente di un piatto). Il collegamento tra i fogli avviene per nome.</div></div>
+ <div class="kG"><div class="card"><b>Esporta</b><div class="mu" style="margin:4px 0 10px">${S.ing.filter(i=>!i.auto).length} ingredienti · ${S.dishes.length} piatti · ${S.dishes.reduce((s,d)=>s+d.lines.length,0)} righe di ricetta</div>
+ <div class="row"><button class="b pPri" onclick="xlsExport('xlsx')">Scarica Excel (tutto)</button></div>
+ <div class="row"><span class="mu">Solo un elenco in CSV:</span><button class="b" onclick="xlsExport('csv','ing')">Ingredienti</button><button class="b" onclick="xlsExport('csv','dish')">Piatti</button><button class="b" onclick="xlsExport('csv','rec')">Ricette</button></div>
+ <div class="mu" style="font-size:13px">Il CSV usa il punto e virgola come separatore: si apre direttamente con Excel in italiano.</div></div>
+ <div class="card"><b>Importa</b><div class="mu" style="margin:4px 0 10px">Carica un file .xlsx, .xls o .csv. Prima di salvare ti mostro cosa verrà creato e cosa aggiornato.</div>
+ <input type="file" accept=".xlsx,.xls,.csv,.txt" onchange="xlsImport(this.files);this.value=''" aria-label="File da importare">
+ <div class="row" style="margin-top:10px"><button class="b" onclick="xlsTemplate()">Scarica il modello vuoto</button></div></div></div>
+ <div class="card"><b>Regole dell'importazione</b><ul class="mu" style="margin:6px 0 0;padding-left:18px;line-height:1.6">
+ <li>Ingredienti e piatti si riconoscono dal <b>nome</b> (maiuscole e accenti non contano): se esistono vengono aggiornati, altrimenti creati.</li>
+ <li>Le colonne non riconosciute vengono ignorate; le celle vuote non cancellano i dati esistenti.</li>
+ <li>I prezzi degli ingredienti sono <b>senza IVA</b>; il prezzo di vendita dei piatti è <b>IVA inclusa</b>. Si accettano numeri con la virgola (7,50) e il simbolo €.</li>
+ <li>Nel foglio Ricette la quantità è in grammi (o pezzi per gli ingredienti a pezzo). Se scrivi kg o litri nella colonna Unità, viene convertita.</li>
+ <li>Per ogni piatto presente nel foglio Ricette, la ricetta viene <b>sostituita</b> con quella del file. I piatti assenti dal foglio non vengono toccati.</li>
+ <li>Le colonne «calcolato» dell'esportazione servono solo da consultazione e vengono ignorate.</li></ul></div>`}
 
 /* ===== Conto economico ===== */
 const CE_CAT=[['mp','Materia prima food'],['bev','Bevande'],['cons','Consumabili e pulizia'],['manut','Manutenzioni'],['altro','Altre spese'],['escl','Non contare']];
@@ -1382,7 +1716,7 @@ Object.keys(S.rev).filter(inM).forEach(k=>{const v=S.rev[k]||{},g=c=>+v[c]||0;t.
 const fc={};Object.keys(S.vend).filter(inM).forEach(k=>Object.entries(S.vend[k]).forEach(([id,q])=>{const d=S.dishes.find(x=>x.id===id);if(!d)return;if(!(id in fc))fc[id]=dishFood(d);t.teo+=fc[id]*(+q||0)}));
 rows.filter(r=>inM(r.d)).forEach(r=>{const c=ceCatOf(r.f);if(c==='escl')return;t[c]+=r.a;t.has=true});
 const now=ymd(new Date()).slice(0,7),n=mList(from,to).filter(m=>m>=first&&m<=now).length,F=k=>fixV(k)*n;
-return Object.assign(t,{n,lab:F('dip'),utenze:F('luce')+F('gas')+F('acqua')+F('spazz'),ads:F('cads'),tel:F('ctel')+F('cecom'),altroP:F('altro'),affitto:F('affitto'),consul:F('ccomm')+F('ccons'),serv:F('chaccp')+F('cfatt')})}
+return Object.assign(t,{n,lab:labRange(from,to,first),utenze:F('luce')+F('gas')+F('acqua')+F('spazz'),ads:F('cads'),tel:F('ctel')+F('cecom'),altroP:F('altro'),affitto:F('affitto'),consul:F('ccomm')+F('ccons'),serv:F('chaccp')+F('cfatt')})}
 const CE_S=[
  {id:'ric',l:'Ricavi',k:'rev',tot:'Ricavi totali',L:[['sala','Sala (tavoli e The Fork)'],['asporto','Asporto e telefono'],['delivery','Delivery ed e-commerce']]},
  {id:'cogs',l:'Costo del venduto',k:'cost',tot:'Totale materia prima',L:[['mp','Materia prima food'],['bev','Bevande']]},
