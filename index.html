@@ -210,6 +210,10 @@ table.bpT{min-width:560px}table.bpWide{min-width:1080px}
 .lbG td,.lbG th{font-variant-numeric:tabular-nums}
 .adv{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;border-left:4px solid var(--bd)}.adv.bad{border-left-color:var(--bad)}.adv.warn{border-left-color:#d9a441}.adv.ok{border-left-color:var(--ok)}.adv.info{border-left-color:var(--c1)}
 .advI{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800;flex:none;background:var(--bg)}.adv.bad .advI{background:var(--bad);color:#fff}.adv.warn .advI{background:#d9a441;color:#fff}.adv.ok .advI{background:var(--ok);color:#fff}.adv.info .advI{background:var(--c1);color:#fff}
+
+.lockC{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;border-color:var(--ac)}.lockI{font-size:30px;line-height:1}
+.consG{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:760px){.consG{grid-template-columns:1fr}}
+.consC{display:flex;flex-direction:column;gap:6px;margin:0!important}.consC.on{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}.consP b{font-size:28px;font-variant-numeric:tabular-nums}
 </style></head>
 <body><div class="app"><aside class="sb" aria-label="Menu"><div id="nav"></div><div class="sbS"><span id="sst"></span><button id="sbtn" onclick="logout()">Esci</button></div></aside>
 <div class="sbBg" onclick="document.body.classList.remove('sbo')"></div>
@@ -276,13 +280,13 @@ D('ex_d_frit','Mozzarella sticks con patatine','fritti',5.5,[[mst,120],[pfr,150]
 D('ex_d_tira','Tiramisù','altri',5,[[mas,60],[uova,25],[sav,30],[caf,10],[cac,2],[zuc,20]]);
 const z=['luce','gas','affitto','dip','acqua','altro'],v=[250,100,1000,2000,50,100];if(z.every(k=>!+S.p[k])){z.forEach((k,j)=>S.p[k]=v[j]);S.exP=1}
 S.exOn=1;S.exSeen=1}
-function removeExamples(){ask('Cancellare tutti i dati di esempio (pietanze, ingredienti, costi)? I dati che hai inserito tu restano.',()=>{exOpsRemove();
+function removeExamples(){ask('Cancellare tutti i dati di esempio (pietanze, ingredienti, incassi, spese, fatture, turni, magazzino, budget e HACCP)? I dati che hai inserito tu restano.',()=>{exOpsRemove();
 S.dishes=S.dishes.filter(d=>!d.ex);const usedI=new Set();S.dishes.forEach(d=>d.lines.forEach(l=>usedI.add(l.ing)));S.imps.forEach(m=>CATS.forEach(([c])=>(m.slots[c]||[]).forEach(s=>{if(s.ing)usedI.add(s.ing)})));
 S.ing=S.ing.filter(i=>!(i.ex&&!usedI.has(i.id)));S.ing.forEach(i=>{if(i.exp){i.price=null;delete i.exp}});S.fmt=S.fmt.filter(f=>!(f.ex&&!S.dishes.some(d=>d.pf===f.id)));
 if(S.exDough){const m=S.imps[0];if(m&&m.slots)CATS.forEach(([c])=>(m.slots[c]||[]).forEach(s=>{if(s.qty)s.qty=0}));delete S.exDough}
 if(S.exP){['luce','gas','affitto','dip','acqua','altro'].forEach(k=>S.p[k]=0);delete S.exP}
 delete S.exOn;S.exSeen=1;open_=null;R()})}
-const exBanner=()=>S.exOn?'<div class="card" style="background:var(--warn)"><b>📘 Dati di esempio</b><div class="mu">Pietanze, ingredienti e costi qui sotto sono di prova, per mostrarti come si compila: aprili, cambia i numeri e guarda come si aggiornano food cost e margine. Quando sei pronto, cancellali e inserisci i tuoi.</div><button class="b" onclick="removeExamples()">Cancella i dati di esempio</button></div>':'';
+const exBanner=()=>S.exOn?'<div class="card" style="background:var(--warn)"><b>📘 Dati di esempio</b><div class="mu">Stai guardando una pizzeria inventata, con numeri verosimili: menu e ricette, quasi due anni di incassi, spese dei fornitori, fatture, conti di Cassa delle ultime settimane, turni del personale, magazzino, prenotazioni, budget del Business Plan e registri HACCP. Apri le sezioni, cambia i numeri e guarda come si aggiornano food cost, prime cost e conto economico. Quando sei pronto, cancellali e inserisci i tuoi.</div><button class="b" onclick="removeExamples()">Cancella i dati di esempio</button></div>':'';
 if(S.exNew||(!S.exOn&&!S.exSeen&&!D.ing.length&&S.ing.every(i=>!i.price&&CATS.some(([c,l])=>nmLow(i.name)===l.toLowerCase()))&&!S.dishes.length&&!S.fatt.length&&!Object.keys(S.rev).length&&!S.preps.length)){delete S.exNew;loadExamples()}
 let curImp=null;const IM=id=>S.imps.find(m=>m.id===id)||S.imps[0];
 const impL=m=>CATS.flatMap(([c])=>m.slots[c]).filter(l=>l.ing);
@@ -308,9 +312,9 @@ return{par:totC()/(base+lav()),c,miss,nog,tot,rec:tot*S.p.ricarico,fc:d.sale?bas
 const used=id=>S.dishes.filter(d=>d.lines.some(l=>l.ing===id)).length;
 function syncOre(){const p=S.p;if(!p.oreMode){p.oreMode='g';const o=+p.ore||0;p.oreH=Math.floor(o+1e-9);p.oreMin=Math.min(59,Math.round((o-p.oreH)*60))}const t=(+p.oreH||0)+(+p.oreMin||0)/60,g=+p.giorni||0;p.ore=p.oreMode==='g'?t:g>0?(p.oreMode==='s'?t*52/12:t)/g:0}
 function fmtOre(h){let H=Math.floor(h+1e-9),m=Math.round((h-H)*60);if(m>=60){H++;m=0}return H+' h '+String(m).padStart(2,'0')+' min'}
-function R(){const _sk=skSave();posInit();magInit();persInit();exOps();profSync();syncOre();migImp();syncImps();syncSugi();autoPrices();if(view==='trac'){view='haccp';hsub='trac'}if(view==='admin'&&isAdm()&&Date.now()-admAt>20000){admAt=Date.now();admLoad()}save();CH.find(x=>x[0]==='extra')[1]=S.p.extraName||'Altra piattaforma';try{sessionStorage.setItem('ce_view',view)}catch(e){}
+function R(){const _sk=skSave();posInit();magInit();persInit();exOps();exScen();profSync();syncOre();migImp();syncImps();syncSugi();autoPrices();if(view==='trac'){view='haccp';hsub='trac'}if(view==='admin'&&isAdm()&&Date.now()-admAt>20000){admAt=Date.now();admLoad()}save();CH.find(x=>x[0]==='extra')[1]=S.p.extraName||'Altra piattaforma';try{sessionStorage.setItem('ce_view',view)}catch(e){}
 document.getElementById('nav').innerHTML=sideNav();
-document.getElementById('v').innerHTML=impBanner()+abbBanner()+exBanner()+(view==='piatti'?pPiatti():view==='haccp'?pHaccp():view==='ing'?pIng():view==='imp'?pImp():view==='rev'?pRev():view==='costi'?pCosti():view==='graf'?pGraf():view==='ce'?pCE():view==='prime'?pPrime():view==='cassa'?pCassa():view==='xls'?pXls():view==='pers'?pPers():view==='pren'?pPren():view==='kpi'?pKpi():view==='ai'?pAdv():view==='mag'?pMag():view==='bp'?pBP():TODO[view]?pTodo(view):view==='fmt'?pFmt():view==='fatt'?pFatt():view==='guida'?pGuida():view==='admin'?pAdmin():view==='abb'?pAbb():pPar());if(view==='bp')bpFill();fotoHydrate();skRest(_sk)}
+document.getElementById('v').innerHTML=impBanner()+abbBanner()+exBanner()+(view==='piatti'?pPiatti():view==='haccp'?pHaccp():view==='ing'?pIng():view==='imp'?pImp():view==='rev'?pRev():view==='costi'?pCosti():view==='graf'?pGraf():view==='ce'?pCE():view==='prime'?(proLocked('prime')?pLocked('prime'):pPrime()):view==='cassa'?pCassa():view==='xls'?pXls():view==='pers'?(proLocked('pers')?pLocked('pers'):pPers()):view==='cons'?pCons():view==='pren'?pPren():view==='kpi'?pKpi():view==='ai'?pAdv():view==='mag'?pMag():view==='bp'?pBP():TODO[view]?pTodo(view):view==='fmt'?pFmt():view==='fatt'?pFatt():view==='guida'?pGuida():view==='admin'?pAdmin():view==='abb'?pAbb():pPar());if(view==='bp')bpFill();fotoHydrate();skRest(_sk)}
 function skSave(){const o={y:window.scrollY,l:{}};document.querySelectorAll('[data-sk]').forEach(e=>o.l[e.dataset.sk]=e.scrollTop);return o}
 function skRest(o){document.querySelectorAll('[data-sk]').forEach(e=>{if(o.l[e.dataset.sk]!=null)e.scrollTop=o.l[e.dataset.sk]});if(Math.abs(window.scrollY-o.y)>2)window.scrollTo(0,o.y)}
 function syncImps(){const ids=new Set();S.imps.forEach(m=>{if(m.type==='pasta')return;const id='im_'+m.id;ids.add(id);let i=S.ing.find(z=>z.id===id);if(!i){i={id,unit:'pz',iva:0,auto:true,apz:true};S.ing.push(i)}i.name=m.name;i.price=Math.round(impC(m)*10000)/10000;i.imp=m.id;i.auto=true;i.apz=true;i.unit='pz'});
@@ -910,11 +914,12 @@ bank:'<path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
 spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
 gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
 help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.4c-.7.3-1 .8-1 1.5v.6M12 17h.01"/>',
+phone:'<path d="M5 3h3l2 5-2.5 1.5a11 11 0 0 0 7 7L16 14l5 2v3a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
 card:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6 15h4"/>'};
 const icon=k=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${SVGI[k]||''}</svg>`;
 const MENU=[['cassa','Cassa','cassa'],['pren','Prenotazioni','cal'],[null,'Prodotti','box',[['ing','Ingredienti'],['fmt','Formati pasta'],['xls','Importa / esporta Excel']]],['mag','Magazzino','store'],
 [null,'Distinte base','list',[['piatti','Piatti e ricette'],['imp','Impasto']]],['pers','Personale','users'],['prime','Prime Cost','euro'],['graf','Dashboard','grid'],['kpi','KPI','bars'],
-['bp','Business Plan','trend'],['haccp','HACCP','shield'],[null,'Finanza','bank',[['rev','Registro incassi'],['costi','Registro spese'],['fatt','Fatture'],['ce','Conto economico']]],['ai','AI Advisor','spark']];
+['bp','Business Plan','trend'],['haccp','HACCP','shield'],[null,'Finanza','bank',[['rev','Registro incassi'],['costi','Registro spese'],['fatt','Fatture'],['ce','Conto economico']]],['ai','AI Advisor','spark'],['cons','Consulenze','phone']];
 const MENU_B=[['par','Parametri','gear'],['guida','Istruzioni','help']];
 const TODO={};
 let sbOpen={};
@@ -922,7 +927,7 @@ const vLabel=k=>{for(const m of MENU.concat(MENU_B)){if(m[0]===k)return m[1];if(
 function navGo(k){view=k;document.body.classList.remove('sbo');R();window.scrollTo(0,0)}
 function locName(){const o=dlg('<b>Nome del locale</b><input id="ln" style="width:100%;box-sizing:border-box;margin:8px 0" value="'+esc(S.p.locale||'')+'"><div class="row"><button class="b" id="lo">Salva</button><button class="b" id="lx">Annulla</button></div>');const i=o.querySelector('#ln');i.focus();
 o.querySelector('#lx').onclick=()=>o.remove();o.querySelector('#lo').onclick=()=>{S.p.locale=i.value.trim();o.remove();R()}}
-function sideNav(){const it=(k,l,ic)=>`<button class="si${view===k?' on':''}" onclick="navGo('${k}')">${icon(ic)}<span>${l}</span>${TODO[k]?'<em>presto</em>':''}</button>`;
+function sideNav(){const it=(k,l,ic)=>`<button class="si${view===k?' on':''}" onclick="navGo('${k}')">${icon(ic)}<span>${l}</span>${TODO[k]?'<em>presto</em>':''}${proLocked(k)?'<em>🔒 PRO</em>':''}</button>`;
 let h=(isAdm()?it('admin',isSup()?'Supervisore':'Gestione','shield'):'');
 MENU.forEach(m=>{if(!m[3]){h+=it(m[0],m[1],m[2]);return}const act=m[3].some(c=>c[0]===view),op=act||!!sbOpen[m[1]];
 h+=`<button class="si${act?' on':''}" aria-expanded="${op}" onclick="sbOpen['${m[1]}']=${!op};R()">${icon(m[2])}<span>${m[1]}</span><i class="chv">${op?'▾':'▸'}</i></button>`;
@@ -1361,7 +1366,9 @@ function magMove(id){const x=magItems().find(z=>z.id===id);const ov=posDlg(`<b s
   S.mag.mov.push({id:'m'+Date.now().toString(36),ts:new Date().toISOString(),ing:id,q,t,note:ov.querySelector('#mn').value.trim()});ov.remove();R()}}
 
 /* ===== Prime Cost: periodo e analisi vendite ===== */
-let pcF=ymd(new Date()).slice(0,7),pcT=ymd(new Date()).slice(0,7);
+// nei primi 9 giorni del mese le analisi partono dall'ultimo mese chiuso (il mese in corso ha ancora pochi dati)
+function anM(){const d=new Date();if(d.getDate()<10)d.setDate(0);return ymd(d).slice(0,7)}
+let pcF=anM(),pcT=anM();
 function salesByTip(from,to){const inM=k=>k.slice(0,7)>=from&&k.slice(0,7)<=to,out={},stoDays=new Set();
  S.storico&&S.storico.forEach(r=>{if(!inM(r.k))return;stoDays.add(r.k);const sub=r.righe.reduce((s,l)=>s+lineP(l)*(+l.q||0),0),f=sub+r.coperto>0?(sub+r.coperto-(+r.sconto||0))/(sub+r.coperto):1;
   r.righe.forEach(l=>{const t=l.tip||'altro';out[t]=(out[t]||0)+lineP(l)*(+l.q||0)*f});if(r.coperto)out.coperto=(out.coperto||0)+r.coperto*f});
@@ -1396,7 +1403,7 @@ const tm=s=>{const[h,m]=String(s||'0:0').split(':');return(+h||0)*60+(+m||0)};
 const shH=t=>{let d=tm(t.b)-tm(t.a);if(d<=0)d+=1440;return Math.max(0,d-(+t.p||0))/60};
 const shC=t=>{const s=stf(t.sid);return s?shH(t)*(+s.costo||0):0};
 const shiftsIn=(from,to)=>S.turni.filter(t=>t.d>=from&&t.d<=to);
-const labMonth=m=>{const L=S.turni.filter(t=>t.d.slice(0,7)===m);return L.length?L.reduce((s,t)=>s+shC(t),0):null};
+const labMonth=m=>{const tdy=td(),L=S.turni.filter(t=>t.d.slice(0,7)===m&&t.d<=tdy);return L.length?L.reduce((s,t)=>s+shC(t),0):null};
 const camList=()=>{const L=S.staff.filter(s=>s.cassa!==false&&s.attivo!==false).map(s=>s.nome);return L.length?L:S.cam};
 const shId=()=>'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 function pPers(){persInit();
@@ -1522,7 +1529,7 @@ function pPrimeExtra(){const fb=fbAnalysis(pcF,pcT),sales=salesByTip(pcF,pcT),la
  <div class="sc"><b class="label">Dettaglio staff</b><table style="margin-top:4px"><tr><th>Nome</th><th>Ore totali</th><th>Costo totale</th></tr>${sl||'<tr><td colspan="3" class="mu">Nessun turno nel periodo: inseriscili in Personale → Turni.</td></tr>'}</table></div></div></div>`}
 
 /* ===== KPI ===== */
-let kF=ymd(new Date()).slice(0,7),kT=ymd(new Date()).slice(0,7);
+let kF=anM(),kT=anM();
 function pKpi(){if(kT<kF)kT=kF;const a=kF+'-01',z=lastDay(kT),st=S.storico.filter(r=>r.k>=a&&r.k<=z),c=ceDer(ceData(kF,kT)),inc=c.R;
  const sala=st.filter(r=>r.tipo==='sala'),cop=sala.reduce((s,r)=>s+(+r.cop||0),0),ore=shiftsIn(a,z).reduce((s,t)=>s+shH(t),0);
  const q={};Object.keys(S.vend).filter(k=>k>=a&&k<=z).forEach(k=>Object.entries(S.vend[k]).forEach(([id,n])=>q[id]=(q[id]||0)+(+n||0)));const pz=Object.values(q).reduce((s,v)=>s+v,0);
@@ -1542,14 +1549,14 @@ function pKpi(){if(kT<kF)kT=kF;const a=kF+'-01',z=lastDay(kT),st=S.storico.filte
  <div class="card sc"><b>Food cost teorico per categoria</b> <span class="mu">pesato sulle quantità vendute · obiettivo ${tgt}%</span><table style="margin-top:6px"><tr><th>Categoria</th><th style="text-align:right">Costo merce</th><th style="text-align:right">Venduto (senza IVA)</th><th style="text-align:right">Food cost</th></tr>${Object.entries(cat).sort((x,y)=>y[1].n-x[1].n).map(([k,o])=>{const f=o.n?o.c/o.n*100:NaN;return`<tr><td>${esc(catLab(k))}</td><td style="text-align:right">${eur(o.c)}</td><td style="text-align:right">${eur(o.n)}</td><td style="text-align:right"><span class="pl ${f<=tgt?'ok':'bad'}">${isFinite(f)?f.toFixed(1).replace('.',',')+'%':'–'}</span></td></tr>`}).join('')||'<tr><td colspan="4" class="mu">Nessun dato.</td></tr>'}</table></div>`}
 
 /* ===== AI Advisor (consigli automatici) ===== */
-function advice(){const out=[],now=ymd(new Date()),m=now.slice(0,7),pm=mAdd(m,-1),p2=mAdd(m,-2),tgt=+S.p.pcT||62,fcT=+S.p.fcT||30,add=(l,t,d,go,gl)=>out.push({l,t,d,go,gl});
+function advice(){const out=[],now=ymd(new Date()),m=anM(),ml=m===now.slice(0,7)?'questo mese':'a '+mlab(m),pm=mAdd(now.slice(0,7),-1),p2=mAdd(now.slice(0,7),-2),tgt=+S.p.pcT||62,fcT=+S.p.fcT||30,add=(l,t,d,go,gl)=>out.push({l,t,d,go,gl});
  const c=cogsFix(ceDer(ceData(m,m)),m,m);
  if(c.R>0){const pc=c.PC/c.R*100,lb=c.lab/c.R*100;
-  if(pc>tgt)add('bad','Prime cost al '+pc.toFixed(1).replace('.',',')+'% questo mese','È sopra il tuo obiettivo del '+tgt+'%. Ogni punto in più vale circa '+eur(c.R/100)+' di margine perso su questo mese. Guarda prima i piatti con food cost alto e i giorni con labor alto.','prime','Apri Prime Cost');
-  else add('ok','Prime cost sotto controllo','Questo mese sei al '+pc.toFixed(1).replace('.',',')+'%, entro l\'obiettivo del '+tgt+'%.','prime','Apri Prime Cost');
+  if(pc>tgt)add('bad','Prime cost al '+pc.toFixed(1).replace('.',',')+'% '+ml,'È sopra il tuo obiettivo del '+tgt+'%. Ogni punto in più vale circa '+eur(c.R/100)+' di margine perso '+(ml==='questo mese'?'su questo mese':ml)+'. Guarda prima i piatti con food cost alto e i giorni con labor alto.','prime','Apri Prime Cost');
+  else add('ok','Prime cost sotto controllo',(ml==='questo mese'?'Questo mese':cap(ml))+' sei al '+pc.toFixed(1).replace('.',',')+'%, entro l\'obiettivo del '+tgt+'%.','prime','Apri Prime Cost');
   if(lb>38)add('bad','Costo del personale alto: '+lb.toFixed(1).replace('.',',')+'% degli incassi','Sopra il 35-38% il margine si assottiglia molto. Controlla i turni nei giorni con meno incasso (vedi Prime Cost → Analisi labor cost).','pers','Apri Turni');
   else if(lb>33)add('warn','Costo del personale al limite: '+lb.toFixed(1).replace('.',',')+'%','Tienilo d\'occhio: la soglia di attenzione tipica è intorno al 33-35%.','pers','Apri Turni')}
- else add('info','Nessun incasso registrato questo mese','Chiudi i conti dalla Cassa o inserisci gli incassi in Finanza → Registro incassi: quasi tutte le analisi partono da lì.','cassa','Apri Cassa');
+ else add('info','Nessun incasso registrato '+ml,'Chiudi i conti dalla Cassa o inserisci gli incassi in Finanza → Registro incassi: quasi tutte le analisi partono da lì.','cassa','Apri Cassa');
  const a30=addD(now,-30),q={};Object.keys(S.vend).filter(k=>k>=a30).forEach(k=>Object.entries(S.vend[k]).forEach(([id,n])=>q[id]=(q[id]||0)+(+n||0)));
  const hi=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off).map(d=>({d,x:fcInfo(d),n:q[d.id]||0})).filter(o=>isFinite(o.x.fc)&&o.x.fc*100>(hasV(o.d.fcT)?+o.d.fcT:fcT)).sort((x,y)=>y.n-x.n);
  if(hi.length)add('warn',hi.length+' piatti con food cost sopra l\'obiettivo',hi.slice(0,5).map(o=>esc(o.d.name)+' '+(o.x.fc*100).toFixed(1).replace('.',',')+'%'+(o.n?' ('+o.n+' venduti in 30 gg)':'')+(isFinite(o.x.pminI)?' → prezzo minimo '+eur(o.x.pminI):'')).join(' · '),'piatti','Apri Distinte base');
@@ -1558,10 +1565,10 @@ function advice(){const out=[],now=ymd(new Date()),m=now.slice(0,7),pm=mAdd(m,-1
  if(Object.keys(q).length){const dead=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off&&!q[d.id]);if(dead.length)add('info',dead.length+' piatti in vendita mai venduti negli ultimi 30 giorni',dead.slice(0,8).map(d=>esc(d.name)).join(', ')+'. Valuta se toglierli dal menu o rilanciarli: un menu più corto riduce scorte e sprechi.','piatti','Apri Distinte base')}
  magInit();const st=stock(),low=magItems().filter(x=>{const mn=+S.mag.min[x.id]||0;return mn&&st[x.id].q<mn});
  if(low.length)add('warn',low.length+' prodotti sotto la scorta minima',low.slice(0,8).map(x=>esc(x.name)+' '+mqty(st[x.id].q,x.u)).join(' · '),'mag','Apri Magazzino');
- const fb=fbAnalysis(m,m).rows.food;if(fb&&fb.teo>0&&fb.cr-fb.teo>fb.teo*0.05)add('warn','Consumo reale di food più alto del teorico','Questo mese sono usciti '+eur(fb.cr-fb.teo)+' di merce in più rispetto alle ricette dei piatti venduti ('+((fb.cr/fb.teo-1)*100).toFixed(1).replace('.',',')+'%). Cause tipiche: sprechi, porzioni abbondanti, piatti non battuti in cassa.','prime','Apri analisi consumi');
+ const fb=fbAnalysis(m,m).rows.food;if(fb&&fb.teo>0&&fb.cr-fb.teo>fb.teo*0.05)add('warn','Consumo reale di food più alto del teorico',(ml==='questo mese'?'Questo mese':cap(ml))+' sono usciti '+eur(fb.cr-fb.teo)+' di merce in più rispetto alle ricette dei piatti venduti ('+((fb.cr/fb.teo-1)*100).toFixed(1).replace('.',',')+'%). Cause tipiche: sprechi, porzioni abbondanti, piatti non battuti in cassa.','prime','Apri analisi consumi');
  const rows=costsOn(),sp=mm=>{const o={};rows.filter(r=>r.d.slice(0,7)===mm).forEach(r=>o[r.f]=(o[r.f]||0)+r.a);return o},A=sp(pm),B=sp(p2);
  const up=Object.keys(A).filter(f=>B[f]>0&&A[f]-B[f]>100&&A[f]/B[f]>1.25).sort((x,y)=>(A[y]-B[y])-(A[x]-B[x]));
- if(up.length)add('warn','Spesa in aumento da '+up.length+' fornitori',up.slice(0,5).map(f=>esc(f)+': '+eur(B[f])+' → '+eur(A[f])).join(' · ')+' ('+esc(mlab(p2))+' → '+esc(mlab(pm))+'). Controlla se sono aumentati i prezzi o le quantità.','costi','Apri Registro spese');
+ if(up.length)add('warn','Spesa in aumento da '+(up.length===1?'1 fornitore':up.length+' fornitori'),up.slice(0,5).map(f=>esc(f)+': '+eur(B[f])+' → '+eur(A[f])).join(' · ')+' ('+esc(mlab(p2))+' → '+esc(mlab(pm))+'). Controlla se sono aumentati i prezzi o le quantità.','costi','Apri Registro spese');
  const noP=S.ing.filter(i=>!i.auto&&!i.price&&S.dishes.some(d=>d.lines.some(l=>l.ing===i.id)));
  if(noP.length)add('info',noP.length+' ingredienti usati nelle ricette senza prezzo',noP.slice(0,8).map(i=>esc(i.name)).join(', ')+': il food cost di quei piatti risulta più basso del vero.','ing','Apri Ingredienti');
  const nc=[...new Set(rows.map(r=>r.f))].filter(f=>!(S.ceCat||{})[ceKey(f)]);
@@ -1572,9 +1579,68 @@ function pAdv(){const L=advice(),ic={bad:'!',warn:'!',info:'i',ok:'✓'};
  return`<div class="card"><b style="font-size:18px">AI Advisor</b><div class="mu" style="margin-top:4px">Legge i numeri del locale (cassa, ricette, magazzino, turni, fatture) e indica dove intervenire. Sono consigli automatici calcolati su regole: non usano un modello di intelligenza artificiale e non inviano i dati da nessuna parte.</div></div>
  ${L.map(a=>`<div class="card adv ${a.l}"><span class="advI">${ic[a.l]}</span><div style="flex:1;min-width:0"><b>${a.t}</b><div class="mu" style="margin-top:3px">${a.d}</div></div>${a.go?`<button class="b" onclick="navGo('${a.go}')">${a.gl}</button>`:''}</div>`).join('')}`}
 
+/* ===== Scenario completo di esempio: storico incassi, spese, fatture, budget, HACCP ===== */
+const EX_STAFF=[['Rossi Paolo','manager',28,false],['Greco Anna','cuoco',24,false],['Moretti Sara','pizzaiolo',23,false],['Conti Luca','cameriere',19,true],['Ferri Giulia','cameriere',19,true],['Diallo Amadou','lavapiatti',16,false]];
+const EX_SUP=[['Metro Cash & Carry','mp',.115,10],['Ortofrutta Bianchi','mp',.03,4],['Caseificio Valle Verde','mp',.06,4],['Molino Rossi farine','mp',.025,4],['Bevande Martini srl','bev',.08,22]];
+const EX_PAR={luce:1350,gas:850,affitto:3500,dip:16500,acqua:140,spazz:240,altro:550,ctel:60,ccomm:450,ccons:250,chaccp:45,cfatt:30,cads:400,justeat:15,glovo:20};
+function exScen(){if(!S.exOn||S.exScen)return;ensureBP();let sd=11;const rnd=()=>{sd=(sd*16807)%2147483647;return(sd-1)/2147483646};
+ const today=td(),Y=+today.slice(0,4),wd=k=>(new Date(k+'T12:00:00').getDay()+6)%7;
+ if(!S.p.locale){S.p.locale='Pizzeria Da Gigi';S.exLoc=1}
+ EX_STAFF.forEach(([n,ru,c],i)=>{const x=S.staff.find(s=>s.id==='ex_s'+i);if(x)x.costo=c});
+ const pk=[];Object.entries(EX_PAR).forEach(([k,v])=>{if(!+S.p[k]||(S.exP&&['luce','gas','affitto','dip','acqua','altro'].includes(k))){S.p[k]=v;pk.push(k)}});S.exPk=pk;
+ if(!+S.p.coperto){S.p.coperto=2;S.exCop=1}
+ // incassi giornalieri: dal 1° gennaio dell'anno scorso fino al giorno prima dei conti di Cassa
+ const st=(S.storico||[]).filter(r=>r.ex).map(r=>r.k).sort()[0]||addD(today,-27);
+ const SEA=[.78,.82,.92,1,1.06,1.1,1.15,.95,1.02,1,.9,1.12],WD=[0,.7,.75,.85,1.25,1.45,1.15];
+ const ds=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off&&+d.sale>0&&!d.peso),W={pizze:3,primi:1.5,antipasti:1,secondi:.6,contorni:.8,panini:.8,fritti:.8,altri:.9};
+ const dw=ds.map(d=>W[d.cat]||1),dwT=dw.reduce((a,b)=>a+b,0),pMed=ds.reduce((s,d,i)=>s+dw[i]*d.sale,0)/(dwT||1);
+ const pickD=()=>{let x=rnd()*dwT;for(let i=0;i<ds.length;i++){x-=dw[i];if(x<=0)return ds[i]}return ds[ds.length-1]};
+ S.exRev={};S.exVendD=[];
+ for(let k=(Y-1)+'-01-01';k<st;k=addD(k,1)){const w=wd(k),md=k.slice(5);if(w===0||S.rev[k]||md==='12-25'||md==='01-01'||(md>='08-10'&&md<='08-23'))continue;
+  const g=(+k.slice(0,4)<Y?.92:1)*1950*SEA[+k.slice(5,7)-1]*WD[w]*(.88+.24*rnd()),h=x=>Math.round(g*x*(.85+.3*rnd())*2)/2;
+  const o={tavoli:h(.74),asporto:h(.09),tel:h(.04),justeat:h(.09),glovo:h(.04)};S.rev[k]=o;S.exRev[k]=Object.assign({},o);
+  if(ds.length&&!S.vend[k]){const n=Math.round(g*.85/pMed),v={};for(let j=0;j<n;j++){const d=pickD();v[d.id]=(v[d.id]||0)+1}S.vend[k]=v;S.exVendD.push(k)}}
+ exFill(st);
+ // spese settimanali dei fornitori (con IVA), calcolate sugli incassi della settimana
+ const revDay=k=>{const v=S.rev[k]||{};return CH.reduce((s,[c])=>s+(+v[c]||0),0)};S.exCat=[];if(!S.ceCat)S.ceCat={};
+ const cat=(f,c)=>{const key=ceKey(f);if(!S.ceCat[key]){S.ceCat[key]=c;S.exCat.push(key)}};EX_SUP.forEach(([f,c])=>cat(f,c));cat('Pulito Service','cons');cat('Tecnoforni assistenza','manut');
+ const sp=(d,f,t,v,n)=>S.spese.push({id:'exsp'+S.spese.length+'_'+d,d,f,t:r2(t),v,n:n||'',ex:1});
+ const last2=addD(today,-14);let fatN=0;
+ for(let k=(Y-1)+'-01-06';k<=today;k=addD(k,7)){let wk=0;for(let i=1;i<=7;i++)wk+=revDay(addD(k,-i));if(!wk)continue;
+  EX_SUP.forEach(([f,c,pc,iva],i)=>{const t=wk*pc*(.85+.3*rnd());if(i===0&&k>=last2){exFatt(k,t,++fatN);return}sp(k,f,t,iva)})}
+ for(let m=(Y-1)+'-01';m<=today.slice(0,7);m=mAdd(m,1)){const d=m+'-05';if(d>today)break;let mr=0;Object.keys(S.rev).filter(x=>x.slice(0,7)===mAdd(m,-1)).forEach(x=>mr+=revDay(x));
+  if(mr)sp(d,'Pulito Service',mr*.013*(.9+.2*rnd()),22,'detergenti e carta');if(+m.slice(5)%3===0)sp(m+'-18','Tecnoforni assistenza',280+Math.round(rnd()*240),22,'manutenzione forno')}
+ // budget: scenario del Business Plan dell'anno in corso, reso attivo
+ if(!S.bp.scen.length){const s=newScenario('Business Plan '+Y,Y,.6);s.ex=1;S.bp.scen.push(s);if(!S.bp.active){S.bp.active=s.id;S.exBpA=1}}
+ // HACCP: frigoriferi con temperature, lotti, sanificazioni
+ if(!S.ops.some(x=>x)){S.ops[0]='Greco Anna';S.ops[1]='Moretti Sara';S.ops[2]='Rossi Paolo';S.exOpN=1}
+ if(!S.frigos.length){S.frigos.push({id:'exfr1',name:'Cella frigo',min:0,max:4,ex:1},{id:'exfr2',name:'Frigo banco pizzeria',min:0,max:4,ex:1},{id:'exfr3',name:'Congelatore',min:-22,max:-18,ex:1});
+  for(let i=30;i>=0;i--){const k=addD(today,-i);if(wd(k)===0)continue;const T=S.temps[k]||(S.temps[k]={});T.exfr1=Math.round((2+rnd()*1.8)*10)/10;T.exfr2=Math.round((1.5+rnd()*2.3)*10)/10;T.exfr3=Math.round((-20.5+rnd()*2)*10)/10;if(i===9)T.exfr2=5.2}}
+ [['dish','ex_d_sugo',-1,3,0,'pentola da 5 kg'],['dish','ex_d_scogs',-2,1,0,'abbattuto e porzionato'],['dish','ex_d_tira',-1,2,1,'teglia grande'],['dish','ex_d_sugo',-5,-1,0,'']].forEach(([kind,ref,p,sc,op,note],i)=>{if(S.dishes.some(d=>d.id===ref))S.lots.push({id:'exlot'+i,kind,ref,prod:addD(today,p),scad:addD(today,sc),op,note,foto:[],ex:1})});
+ for(let i=13;i>=0;i--){const k=addD(today,-i);if(wd(k)===0)continue;const a=S.sanAreas;S.san.push({id:'exsn'+i+'a',day:k,area:a[0]||'Piani di lavoro',prod:'sanificante alimentare',note:'',op:i%2,ex:1});
+  if(wd(k)===1&&a[2])S.san.push({id:'exsn'+i+'b',day:k,area:a[2],prod:'detergente e sanificante',note:'',op:1,ex:1});if(wd(k)===4&&a[3])S.san.push({id:'exsn'+i+'c',day:k,area:a[3],prod:'sgrassatore',note:'',op:0,ex:1})}
+ S.exScen=1}
+// turni e inventario dall'inizio del mese in cui partono i conti di Cassa, così il mese intero ha costo del lavoro e giacenze
+function exFill(st){const ms=st.slice(0,7)+'-01';if(ms>=st)return;const ids=EX_STAFF.map((x,i)=>'ex_s'+i);if(!ids.every(id=>S.staff.some(s=>s.id===id)))return;
+ for(let k=ms;k<st;k=addD(k,1)){const w=(new Date(k+'T12:00:00').getDay()+6)%7;if(w===0||S.turni.some(t=>t.d===k))continue;const we=w>=4;
+  const T=[[ids[1],'17:30','23:00'],[ids[2],'18:00','23:00'],[ids[3],'18:30','23:30'],[ids[5],'19:00','23:30']];if(we)T.push([ids[0],'18:00','23:30'],[ids[4],'19:00','23:30']);if(w>=5)T.push([ids[4],'12:00','15:00'],[ids[1],'11:00','15:00']);
+  T.forEach(([sid,a,b])=>S.turni.push({id:shId(),sid,d:k,a,b,p:0,ex:1}))}
+ if(!S.mag)return;const days=salesUse(),U={};Object.keys(days).filter(k=>k>=ms&&k<st).forEach(k=>Object.entries(days[k]).forEach(([id,v])=>U[id]=(U[id]||0)+v));
+ const t0=addD(ms,-1)+'T23:59:00.000Z';S.mag.mov.filter(m=>m.ex&&m.t==='inventario'&&m.id.startsWith('exm0')).forEach(m=>{const id=m.ing;if(!U[id])return;S.mag.mov.push({id:'exmi'+id,ts:t0,at:t0,ing:id,q:+((+m.q)+U[id]).toFixed(3),t:'inventario',note:'',ex:1})})}
+function exFatt(d,t,n){const P=[['Mozzarella fiordilatte julienne 2,5 kg',7.2,'kg',4],['Pomodoro polpa fine 5 litri',1.07,'kg',4],['Salamino piccante',12.61,'kg',10],['Prosciutto crudo',22,'kg',10],['Guanciale',14,'kg',10],['Olio',7.5,'l',4],['Funghi champignon trifolati 1,7 kg',3.77,'kg',10],['Mascarpone',8,'kg',4]];
+ const sh=[.3,.12,.12,.12,.1,.1,.07,.07],imp=t/1.07,righe=P.map(([de,pu,u,iva],i)=>{const q=Math.max(1,Math.round(imp*sh[i]/pu));return{d:de,q,u,pu,tot:r2(q*pu),iva}});
+ S.fatt.push({id:'exf'+n,fornitore:'Metro Cash & Carry',piva:'00000000000',numero:'2026/'+(4810+n*37),data:d,righe,totale:r2(righe.reduce((s,r)=>s+r.tot*(1+r.iva/100),0)),file:'esempio',ex:1})}
+function exScenRemove(){if(!S.exScen)return;
+ Object.entries(S.exRev||{}).forEach(([k,o])=>{const v=S.rev[k];if(!v)return;Object.entries(o).forEach(([c,x])=>{const y=r2((+v[c]||0)-x);if(y>0.004)v[c]=y;else delete v[c]});if(!Object.keys(v).filter(x=>x!=='_o').length)delete S.rev[k]});
+ (S.exVendD||[]).forEach(k=>delete S.vend[k]);S.spese=S.spese.filter(x=>!x.ex);S.fatt=S.fatt.filter(x=>!x.ex);(S.exCat||[]).forEach(k=>{if(S.ceCat)delete S.ceCat[k]});
+ if(S.bp){const ex=S.bp.scen.filter(x=>x.ex).map(x=>x.id);S.bp.scen=S.bp.scen.filter(x=>!x.ex);if(ex.includes(S.bp.active))S.bp.active=null}
+ const fr=S.frigos.filter(f=>f.ex).map(f=>f.id);S.frigos=S.frigos.filter(f=>!f.ex);Object.keys(S.temps).forEach(k=>{fr.forEach(id=>delete S.temps[k][id]);if(!Object.keys(S.temps[k]).length)delete S.temps[k]});
+ S.lots=S.lots.filter(l=>!l.ex);S.san=S.san.filter(x=>!x.ex);if(S.exOpN){S.ops[0]=S.ops[1]=S.ops[2]=''}
+ (S.exPk||[]).forEach(k=>S.p[k]=0);if(S.exCop)S.p.coperto=0;if(S.exLoc)S.p.locale='';
+ ['exScen','exRev','exVendD','exCat','exBpA','exOpN','exPk','exCop','exLoc'].forEach(k=>delete S[k])}
 /* ===== Dati di esempio per Personale, Cassa, Magazzino, Prenotazioni ===== */
 function exOps(){if(!S.exOn||S.exOps)return;persInit();posInit();magInit();let sd=7;const rnd=()=>{sd=(sd*16807)%2147483647;return(sd-1)/2147483646},pick=a=>a[Math.floor(rnd()*a.length)];
- const SF=[['Rossi Paolo','manager',22,false],['Greco Anna','cuoco',18,false],['Moretti Sara','pizzaiolo',17,false],['Conti Luca','cameriere',15,true],['Ferri Giulia','cameriere',15,true],['Diallo Amadou','lavapiatti',12,false]];
+ const SF=EX_STAFF;
  const ids=SF.map(([n,r,c,k],i)=>{const id='ex_s'+i;if(!S.staff.some(s=>s.id===id))S.staff.push({id,nome:n,ruolo:r,costo:c,cassa:k,attivo:true,col:'',ex:1});return id});
  const today=ymd(new Date()),start=addD(today,-27),ds=S.dishes.filter(d=>d.cat!=='sughi'&&!d.off&&+d.sale>0&&!d.peso);
  for(let k=start;k<=addD(monOf(today),6);k=addD(k,1)){const w=(new Date(k+'T12:00:00').getDay()+6)%7;if(w===0)continue;const we=w>=4;
@@ -1596,7 +1662,7 @@ function exOps(){if(!S.exOn||S.exOps)return;persInit();posInit();magInit();let s
  const tb=(S.sale[0]&&S.sale[0].tables)||[];[['13:00','Bassi',4,1],['20:00','Neri',2,2],['20:30','Fontana',6,3],['21:00','Marchi',4,0]].forEach(([h,n,c,t],i)=>S.pren.push({id:'exp'+i,d:today,h,nome:n,tel:'',cop:c,tav:t&&tb[t]?tb[t].id:'',note:i===2?'compleanno':'',st:'conf',ex:1}));
  S.pren.push({id:'exp9',d:addD(today,1),h:'20:30',nome:'Galli',tel:'',cop:5,tav:'',note:'',st:'conf',ex:1});
  S.exOps=1}
-function exOpsRemove(){(S.storico||[]).filter(r=>r.ex).forEach(r=>posApply(r,-1));if(S.storico)S.storico=S.storico.filter(r=>!r.ex);
+function exOpsRemove(){exScenRemove();(S.storico||[]).filter(r=>r.ex).forEach(r=>posApply(r,-1));if(S.storico)S.storico=S.storico.filter(r=>!r.ex);
  if(S.staff)S.staff=S.staff.filter(s=>!s.ex);if(S.turni)S.turni=S.turni.filter(t=>!t.ex);if(S.pren)S.pren=S.pren.filter(p=>!p.ex);
  if(S.mag){S.mag.mov=S.mag.mov.filter(m=>!m.ex);Object.keys(S.mag.inv).forEach(k=>{if(S.mag.inv[k].ex)delete S.mag.inv[k]})}delete S.exOps}
 
@@ -1697,6 +1763,49 @@ function pXls(){return`<div class="card"><b style="font-size:18px">Importa ed es
  <li>Nel foglio Ricette la quantità è in grammi (o pezzi per gli ingredienti a pezzo). Se scrivi kg o litri nella colonna Unità, viene convertita.</li>
  <li>Per ogni piatto presente nel foglio Ricette, la ricetta viene <b>sostituita</b> con quella del file. I piatti assenti dal foglio non vengono toccati.</li>
  <li>Le colonne «calcolato» dell'esportazione servono solo da consultazione e vengono ignorate.</li></ul></div>`}
+
+/* ===== Livelli: Modulo Pro e Consulenze ===== */
+const PRO_VIEWS=['pers','prime'];
+const isPro=()=>{if(NOLOGIN||!syOn())return true;if(IMP)return true;if(!ME)return true;if(ME.role!=='user')return true;return!!(ME.moduli&&ME.moduli.pro===true)};
+const proLocked=k=>PRO_VIEWS.includes(k)&&!isPro();
+const abbV=(k,d)=>{const a=ABB||{};return a[k]!==undefined&&a[k]!==''?a[k]:d};
+const CONS_TERM='Annullabile quando vuoi. Nel primo mese puoi disdire senza preavviso entro il 16° giorno dall\'attivazione; dal secondo mese la disdetta ha 30 giorni di preavviso.';
+const CONS_TERM_BASE='Annullabile quando vuoi con 30 giorni di preavviso.';
+const consPlans=()=>[{id:'base',nome:abbV('cons1_nome','Consulenza Base'),prezzo:+abbV('cons1_prezzo',95),per:abbV('cons1_per','anno'),desc:abbV('cons1_desc','1 chiamata di consulenza al mese da 30 minuti'),termini:abbV('cons1_term',CONS_TERM_BASE),link:abbV('cons1_link','')},{id:'plus',nome:abbV('cons2_nome','Consulenza Plus'),prezzo:+abbV('cons2_prezzo',150),per:abbV('cons2_per','mese'),desc:abbV('cons2_desc','1 chiamata di consulenza a settimana'),termini:abbV('cons2_term',CONS_TERM),link:abbV('cons2_link','')}];
+async function meReload(){try{const m=await rpc('fc_me',{});if(m)ME=m}catch(e){}R()}
+function pLocked(k){if(!ABB&&syOn())abbLoad();const name=k==='pers'?'Personale':'Prime Cost',pr=abbV('prezzo_pro',''),link=abbV('link_pro',''),rq=ME&&ME.moduli&&ME.moduli.pro_richiesta;
+ return`<div class="card lockC"><span class="lockI" aria-hidden="true">🔒</span><div style="flex:1;min-width:0"><b style="font-size:18px">${name} fa parte del Modulo Pro</b>
+ <p style="margin:6px 0">Il Modulo Pro aggiunge all'abbonamento:</p><ul style="margin:0 0 8px;padding-left:18px;line-height:1.6"><li><b>Personale</b>: dipendenti, ruoli, turni settimanali e costo del lavoro calcolato dalle ore</li><li><b>Prime Cost</b>: food cost e labor cost sugli incassi, consumi di magazzino, sprechi, labor giorno per giorno e per dipendente</li></ul>
+ ${pr?`<p style="margin:0 0 8px"><b>${eur(+pr)} al mese</b> in aggiunta al tuo abbonamento.</p>`:''}
+ <div class="row" style="margin:0">${okUrl(link)?`<a class="b pPri" href="${esc(link)}" target="_blank" rel="noopener" style="text-decoration:none">Paga e attiva il Modulo Pro</a>`:''}${rq?`<span class="ok">Richiesta inviata il ${dIt(rq)}: verrà attivato appena il pagamento è registrato.</span> <button class="b" onclick="meReload()">Ricontrolla</button>`:`<button class="b${okUrl(link)?'':' pPri'}" onclick="proRequest()">Richiedi l'attivazione</button>`}</div>
+ <div class="mu" style="margin-top:8px">I dati che inserisci in Cassa, Magazzino e Distinte base restano tuoi e vengono usati anche dal Modulo Pro appena lo attivi.</div></div></div>`}
+async function proRequest(){try{const m=await rpc('fc_modulo_richiedi',{p_modulo:'pro'});if(ME)ME.moduli=m||ME.moduli;R();note('Richiesta inviata: il fornitore attiverà il Modulo Pro dopo il pagamento.')}catch(e){note('Richiesta non riuscita: riprova tra poco.')}}
+const consStato={richiesta:['In attesa di attivazione','w'],attiva:['Attiva','ok'],disdetta:['Disdetta','bad']};
+function pCons(){if(!ABB&&syOn())abbLoad();const P=consPlans(),c=(ME&&ME.consulenza)||{},user=ME&&ME.role==='user'&&syOn()&&!IMP;const cur=P.find(p=>p.id===c.piano);
+ const st=c.stato?`<div class="card"><b>La tua consulenza: ${esc(cur?cur.nome:c.piano)}</b> <span class="pill ${consStato[c.stato][1]==='ok'?'good':''}" style="${consStato[c.stato][1]==='bad'?'color:var(--bad)':''}">${consStato[c.stato][0]}</span>
+ <div class="mu" style="margin-top:4px">${c.stato==='richiesta'?'Richiesta del '+dIt(c.richiesta_il)+'. Ti contatteremo per fissare la prima chiamata.':c.stato==='attiva'?'Attiva dal '+dIt(c.dal)+'.':'Disdetta il '+dIt(c.disdetta_il)+': il servizio termina il '+dIt(c.fine)+'.'}</div>
+ ${user?`<div class="row" style="margin-top:8px">${c.stato==='richiesta'?'<button class="b" onclick="consAct(\'annulla\')">Annulla la richiesta</button>':''}${c.stato==='attiva'?'<button class="x" onclick="consDisdici()">Disdici la consulenza</button>':''}</div>`:''}</div>`:'';
+ const can=!c.stato||c.stato==='disdetta';
+ return`<div class="card"><b style="font-size:18px">Consulenze</b><div class="mu" style="margin-top:4px">Un consulente analizza con te i numeri del locale (food cost, prime cost, personale, menu) e ti aiuta a decidere dove intervenire. Le chiamate si svolgono al telefono o in videochiamata.</div></div>${st}
+ <div class="consG">${P.map(p=>`<div class="card consC${c.piano===p.id&&c.stato&&c.stato!=='disdetta'?' on':''}"><b style="font-size:17px">${esc(p.nome)}</b><div class="consP"><b>${eur(p.prezzo)}</b> <span class="mu">${p.per==='anno'?'all\'anno':'al mese'}</span></div><div>${esc(p.desc)}</div><div class="mu" style="font-size:13px;margin-top:6px">${esc(p.termini)}</div>
+ <div class="row" style="margin-top:10px">${okUrl(p.link)&&can?`<a class="b" href="${esc(p.link)}" target="_blank" rel="noopener" style="text-decoration:none">Paga</a>`:''}${can?`<button class="b pPri" onclick="consReq('${p.id}')">Richiedi ${esc(p.nome)}</button>`:c.piano===p.id?'<span class="ok">Il tuo piano</span>':''}</div></div>`).join('')}</div>
+ ${!user?`<div class="card mu">${isAdm()?'Questa è la pagina che vedono i ristoranti. Richieste e attivazioni le gestisci in Supervisore, con il pulsante «Consulenza» su ogni ristorante. Prezzi e descrizioni si cambiano nella scheda «Abbonamento: prezzi e pagamento».':'Nella demo le richieste non vengono inviate.'}</div>`:''}`}
+async function consAct(a,piano){try{const c=await rpc('fc_consulenza',{p_azione:a,p_piano:piano||null});if(ME)ME.consulenza=c||{};R()}catch(e){note(/gia_attiva/.test(e.message)?'Hai già una consulenza attiva.':'Operazione non riuscita: riprova tra poco.')}}
+function consReq(id){const p=consPlans().find(x=>x.id===id);if(!(ME&&ME.role==='user'&&syOn()&&!IMP))return note(isAdm()?'Le richieste le fanno i ristoranti dal loro account.':'Nella demo la richiesta non viene inviata.');
+ ask('Richiedere '+p.nome+' a '+eur(p.prezzo)+(p.per==='anno'?' all\'anno':' al mese')+'? '+p.termini,()=>consAct('richiedi',id))}
+function consDisdici(){const c=ME.consulenza||{},d=c.dal?new Date(c.dal+'T12:00:00'):null,today=new Date(td()+'T12:00:00'),days=d?Math.round((today-d)/864e5):99,free=c.piano!=='base'&&days<=15,fine=free?td():addD(td(),30);
+ ask('Disdire la consulenza? '+(free?'Sei entro il 16° giorno dall\'attivazione: il servizio termina oggi.':'Con il preavviso di 30 giorni il servizio termina il '+dIt(fine)+'.'),()=>consAct('disdici'))}
+/* supervisore */
+function admModuli(u){const x=admFind(u),m=x.moduli||{};const o=dlg('<b>Moduli di '+esc(x.nome||x.email)+'</b>'+(m.pro_richiesta?'<p class="w">Ha richiesto il Modulo Pro il '+dIt(m.pro_richiesta)+'.</p>':'')+'<label style="display:block;margin:10px 0"><input type="checkbox" id="mp" '+(m.pro===true?'checked':'')+'> <b>Modulo Pro</b>: Personale e Prime Cost</label><p class="mu">Attivalo dopo aver ricevuto il pagamento. Togliendolo, i dati inseriti restano salvati ma le due sezioni tornano bloccate.</p><div class="row"><button class="b" id="ms">Salva</button><button class="b" id="mx">Annulla</button></div>');
+ o.querySelector('#mx').onclick=()=>o.remove();o.querySelector('#ms').onclick=async()=>{const on=o.querySelector('#mp').checked,n=Object.assign({},m,{pro:on});if(on)delete n.pro_richiesta;o.remove();try{await rpc('fc_admin_set_moduli',{p_uid:u,p_moduli:n});await admLoad()}catch(e){note('Operazione non riuscita: hai eseguito l\'aggiornamento 03_livelli.sql in Supabase?')}}}
+function admCons(u){const x=admFind(u),c=x.consulenza||{},P=consPlans();const o=dlg('<b>Consulenza di '+esc(x.nome||x.email)+'</b>'+(c.stato==='richiesta'?'<p class="w">Richiesta '+esc((P.find(p=>p.id===c.piano)||{}).nome||c.piano)+' del '+dIt(c.richiesta_il)+'.</p>':'')+
+ '<div class="row" style="margin-top:8px"><label>Piano <select id="cp"><option value="">Nessuna</option>'+P.map(p=>'<option value="'+p.id+'" '+(c.piano===p.id?'selected':'')+'>'+esc(p.nome)+' · '+eur(p.prezzo)+'/'+p.per+'</option>').join('')+'</select></label><label>Stato <select id="cs"><option value="attiva">Attiva</option><option value="richiesta">In attesa</option><option value="disdetta">Disdetta</option></select></label></div>'+
+ '<div class="row"><label>Attiva dal <input type="date" id="cd" value="'+(c.dal||td())+'"></label><label>Termina il <input type="date" id="cf" value="'+(c.fine||'')+'"></label></div><p class="mu">Base: disdetta con 30 giorni di preavviso. Plus: senza preavviso entro il 16° giorno, poi 30 giorni. Se il ristorante disdice dall\'app, la data di fine viene calcolata da sola.</p><div class="row"><button class="b" id="co">Salva</button><button class="b" id="cx">Annulla</button></div>');
+ o.querySelector('#cs').value=c.stato==='richiesta'?'attiva':(c.stato||'attiva');o.querySelector('#cx').onclick=()=>o.remove();
+ o.querySelector('#co').onclick=async()=>{const pi=o.querySelector('#cp').value,stv=o.querySelector('#cs').value,v=pi?{piano:pi,stato:stv,dal:o.querySelector('#cd').value||td()}:{};if(pi&&o.querySelector('#cf').value)v.fine=o.querySelector('#cf').value;if(pi&&stv==='disdetta'&&!v.fine)v.fine=td();if(pi&&c.richiesta_il)v.richiesta_il=c.richiesta_il;o.remove();
+  try{await rpc('fc_admin_set_consulenza',{p_uid:u,p_value:v});await admLoad()}catch(e){note('Operazione non riuscita: hai eseguito l\'aggiornamento 03_livelli.sql in Supabase?')}}}
+function tierCell(u){if(u.role!=='user')return'';const m=u.moduli||{},c=u.consulenza||{},P=consPlans(),cn=(P.find(p=>p.id===c.piano)||{}).nome;
+ return'<div style="margin-top:4px">'+(m.pro?'<span class="pill good">PRO</span> ':m.pro_richiesta?'<span class="w">Pro richiesto</span> ':'')+(c.stato?'<span class="'+(c.stato==='richiesta'?'w':c.stato==='attiva'?'ok':'mu')+'">'+esc(cn||c.piano)+(c.stato==='richiesta'?' richiesta':c.stato==='disdetta'?' fino al '+dIt(c.fine):'')+'</span>':'')+'</div>'}
 
 /* ===== Conto economico ===== */
 const CE_CAT=[['mp','Materia prima food'],['bev','Bevande'],['cons','Consumabili e pulizia'],['manut','Manutenzioni'],['altro','Altre spese'],['escl','Non contare']];
@@ -1849,13 +1958,17 @@ o.querySelector('#ab_pay').onclick=()=>{if(P.value==='omaggio')P.value='mensile'
 o.querySelector('#ab_x').onclick=()=>o.remove();
 o.querySelector('#ab_ok').onclick=async()=>{const pi=P.value;if(pi!=='omaggio'&&!S_.value)return note('Scegli la data di scadenza (o premi «Segna pagato»).');o.remove();try{await rpc('fc_admin_set_abb',{p_uid:u,p_piano:pi,p_importo:I.value===''||pi==='omaggio'?null:+I.value,p_scade:pi==='omaggio'?null:S_.value,p_pagato:D.value||null});await admLoad()}catch(e){note('Operazione non riuscita.')}}}
 function abbCell(u){if(u.role!=='user')return'<span class="mu">–</span>';if(u.piano==='omaggio'||!u.piano)return'<span class="mu">Omaggio</span>';const g=u.scade?Math.round((new Date(u.scade)-new Date(td()))/864e5):null;const bad=g!=null&&g<-7,warn=g!=null&&g<=7&&!bad;return pianoTxt(u.piano)+(u.importo?' · '+eur(+u.importo):'')+'<div class="'+(bad?'bad':warn?'w':'mu')+'">'+(u.scade?(g<0?(bad?'scaduto ':'in tolleranza, scaduto ')+dIt(u.scade):'scade '+dIt(u.scade)):'')+'</div>'}
-function abbSettingsCard(){if(!isSup())return'';if(!admS)admS=Object.assign({prezzo_mensile:'',prezzo_annuale:'',link_mensile:'',link_annuale:'',info:''},ABB||{});const v=k=>esc(admS[k]??'');
+function abbSettingsCard(){if(!isSup())return'';if(!admS)admS=Object.assign({prezzo_mensile:'',prezzo_annuale:'',link_mensile:'',link_annuale:'',info:'',prezzo_pro:'',link_pro:'',cons1_nome:'Consulenza Base',cons1_prezzo:95,cons1_per:'anno',cons1_term:CONS_TERM_BASE,cons1_desc:'1 chiamata di consulenza al mese da 30 minuti',cons1_link:'',cons2_nome:'Consulenza Plus',cons2_prezzo:150,cons2_per:'mese',cons2_term:CONS_TERM,cons2_desc:'1 chiamata di consulenza a settimana',cons2_link:''},ABB||{});const v=k=>esc(admS[k]??'');
 return`<div class="card"><b>Abbonamento: prezzi e pagamento</b><div class="mu" style="margin:4px 0 8px">Per ora i ristoranti sono in omaggio. Quando sei pronto compila prezzi e link di pagamento (es. i link di Stripe o PayPal): i ristoranti li vedranno nella sezione «Abbonamento».</div>
 <div class="row"><label>Prezzo mensile € <input type="number" step="0.01" min="0" style="width:100px" value="${v('prezzo_mensile')}" oninput="admS.prezzo_mensile=this.value"></label><label>Prezzo annuale € <input type="number" step="0.01" min="0" style="width:100px" value="${v('prezzo_annuale')}" oninput="admS.prezzo_annuale=this.value"></label></div>
 <div class="row"><label>Link pagamento mensile <input style="min-width:240px" placeholder="https://…" value="${v('link_mensile')}" oninput="admS.link_mensile=this.value"></label><label>Link pagamento annuale <input style="min-width:240px" placeholder="https://…" value="${v('link_annuale')}" oninput="admS.link_annuale=this.value"></label></div>
 <div class="row"><label style="flex:1">Istruzioni di pagamento (es. IBAN per bonifico) <textarea style="width:100%;box-sizing:border-box;min-height:60px" oninput="admS.info=this.value">${v('info')}</textarea></label></div>
+<div class="row" style="margin-top:12px"><b>Modulo Pro (Personale + Prime Cost)</b></div>
+<div class="row"><label>Prezzo aggiuntivo € al mese <input type="number" step="0.01" min="0" style="width:100px" value="${v('prezzo_pro')}" oninput="admS.prezzo_pro=this.value"></label><label>Link pagamento Pro <input style="min-width:240px" placeholder="https://…" value="${v('link_pro')}" oninput="admS.link_pro=this.value"></label></div>
+<div class="row" style="margin-top:12px"><b>Consulenze</b></div>
+${[1,2].map(n=>`<div class="row"><label>Nome <input value="${v('cons'+n+'_nome')}" oninput="admS.cons${n}_nome=this.value"></label><label>Prezzo € <input type="number" step="1" min="0" style="width:90px" value="${v('cons'+n+'_prezzo')}" oninput="admS.cons${n}_prezzo=this.value"></label><label>ogni <select onchange="admS.cons${n}_per=this.value"><option value="mese" ${admS['cons'+n+'_per']!=='anno'?'selected':''}>mese</option><option value="anno" ${admS['cons'+n+'_per']==='anno'?'selected':''}>anno</option></select></label><label style="flex:1">Cosa comprende <input style="width:100%;min-width:200px;box-sizing:border-box" value="${v('cons'+n+'_desc')}" oninput="admS.cons${n}_desc=this.value"></label><label>Link pagamento <input style="min-width:200px" placeholder="https://…" value="${v('cons'+n+'_link')}" oninput="admS.cons${n}_link=this.value"></label></div><div class="row"><label style="flex:1">Condizioni e disdetta <input style="width:100%;box-sizing:border-box" value="${v('cons'+n+'_term')}" oninput="admS.cons${n}_term=this.value"></label></div>`).join('')}
 <div class="row"><button class="b" onclick="abbSave()">Salva</button></div></div>`}
-async function abbSave(){for(const k of['link_mensile','link_annuale']){const u=String(admS[k]||'').trim();if(u&&!okUrl(u))return note('I link devono iniziare con https://')}try{await rpc('fc_admin_abb_settings',{p_value:admS});ABB=Object.assign({},admS);note('Salvato.')}catch(e){note('Salvataggio non riuscito.')}}
+async function abbSave(){for(const k of['link_mensile','link_annuale','link_pro','cons1_link','cons2_link']){const u=String(admS[k]||'').trim();if(u&&!okUrl(u))return note('I link devono iniziare con https://')}try{await rpc('fc_admin_abb_settings',{p_value:admS});ABB=Object.assign({},admS);note('Salvato.')}catch(e){note('Salvataggio non riuscito.')}}
 function admToggle(u,on){const x=admFind(u);ask(on?'Riattivare l\'accesso di '+(x.nome||x.email)+'?':'Disattivare l\'accesso di '+(x.nome||x.email)+'? Non potrà più entrare; i suoi dati restano salvati.',async()=>{try{await rpc('fc_admin_set_enabled',{p_uid:u,p_enabled:on});await admLoad()}catch(e){note('Operazione non riuscita.')}})}
 function admPw(u){const x=admFind(u);const o=dlg('<b>Nuova password</b><p class="mu">'+esc(x.email||'')+'</p><input id="np" style="width:100%;box-sizing:border-box;margin-bottom:8px" placeholder="Almeno 8 caratteri"><div class="row"><button class="b" id="ng">Genera</button><button class="b" id="ns">Salva</button><button class="b" id="nx">Annulla</button></div>');const i=o.querySelector('#np');o.querySelector('#ng').onclick=()=>{i.value=genPw()};o.querySelector('#nx').onclick=()=>o.remove();o.querySelector('#ns').onclick=async()=>{const p=i.value;if(p.length<8)return;o.remove();try{await admCall({action:'password',uid:u,password:p});pwRec(u,p);creds(x.email,p,'Password cambiata')}catch(e){note(e.message)}}}
 function admPerms(u){const x=admFind(u),p=x.perms||{};const L=[['crea','Può creare nuovi ristoranti'],['disattiva','Può disattivare e riattivare l\'accesso'],['password','Può cambiare le password'],['elimina','Può eliminare gli account'],['entra','Può entrare nei ristoranti e modificare i loro dati'],['solo_miei','Vede solo i ristoranti creati da lui']];
@@ -1865,7 +1978,7 @@ function admDel(u){const x=admFind(u);ask('Eliminare definitivamente l\'account 
 function pAdmin(){if(!isAdm())return'<div class="card">Area riservata al supervisore.</div>';
 const list=adm.filter(u=>!admQ||(u.nome+' '+u.email+' '+(u.citta||'')).toLowerCase().includes(admQ));
 const act=adm.filter(u=>u.enabled).length,tot=adm.reduce((s,u)=>s+(+u.fatturato_mese||0),0);
-const rows=list.map(u=>{const me=A&&u.uid===A.uid;return`<tr><td><b>${esc(u.nome||'—')}</b>${u.citta?'<div class="mu">'+esc(u.citta)+'</div>':''}</td><td>${esc(u.email)}</td><td>${u.role==='supervisor'?'<span class="w">supervisore</span> ':u.role==='minus'?'<span class="w">minus</span> ':''}${u.enabled?'<b class="ok">Attivo</b>':'<b class="bad">Disattivato</b>'}</td><td class="mu">${dt(u.last_seen)}</td><td>${u.piatti}</td><td>${u.fatture}</td><td>${eur(+u.fatturato_mese||0)}</td><td>${abbCell(u)}</td><td>${me?'<span class="mu">(tu)</span> '+(isSup()?`<button class="b" title="Registro password" onclick="pwShow('${u.uid}')">🔐 Registro</button>`:''):(can('entra')&&u.role==='user'?`<button class="b" onclick="enterRest('${u.uid}')">▶ Entra</button> `:'')+(can('disattiva')?`<button class="b" onclick="admToggle('${u.uid}',${!u.enabled})">${u.enabled?'Disattiva':'Riattiva'}</button> `:'')+(isSup()&&u.role==='user'?`<button class="b" onclick="admAbb('${u.uid}')">Abbonamento</button> `:'')+(can('password')?`<button class="b" onclick="admPw('${u.uid}')">Password</button> `:'')+(isSup()?`<button class="b" title="Registro password" onclick="pwShow('${u.uid}')">${PW[u.uid]?'🔐 Vedi':'🔐 —'}</button> `:'')+(u.role==='minus'&&isSup()?`<button class="b" onclick="admPerms('${u.uid}')">Permessi</button> `:'')+(can('elimina')?`<button class="x" title="Elimina" onclick="admDel('${u.uid}')">✕</button>`:'')}</td></tr>`}).join('');
+const rows=list.map(u=>{const me=A&&u.uid===A.uid;return`<tr><td><b>${esc(u.nome||'—')}</b>${u.citta?'<div class="mu">'+esc(u.citta)+'</div>':''}</td><td>${esc(u.email)}</td><td>${u.role==='supervisor'?'<span class="w">supervisore</span> ':u.role==='minus'?'<span class="w">minus</span> ':''}${u.enabled?'<b class="ok">Attivo</b>':'<b class="bad">Disattivato</b>'}</td><td class="mu">${dt(u.last_seen)}</td><td>${u.piatti}</td><td>${u.fatture}</td><td>${eur(+u.fatturato_mese||0)}</td><td>${abbCell(u)}${tierCell(u)}</td><td>${me?'<span class="mu">(tu)</span> '+(isSup()?`<button class="b" title="Registro password" onclick="pwShow('${u.uid}')">🔐 Registro</button>`:''):(can('entra')&&u.role==='user'?`<button class="b" onclick="enterRest('${u.uid}')">▶ Entra</button> `:'')+(can('disattiva')?`<button class="b" onclick="admToggle('${u.uid}',${!u.enabled})">${u.enabled?'Disattiva':'Riattiva'}</button> `:'')+(isSup()&&u.role==='user'?`<button class="b" onclick="admAbb('${u.uid}')">Abbonamento</button> <button class="b" onclick="admModuli('${u.uid}')">Moduli${(u.moduli||{}).pro_richiesta&&!(u.moduli||{}).pro?' ●':''}</button> <button class="b" onclick="admCons('${u.uid}')">Consulenza${(u.consulenza||{}).stato==='richiesta'?' ●':''}</button> `:'')+(can('password')?`<button class="b" onclick="admPw('${u.uid}')">Password</button> `:'')+(isSup()?`<button class="b" title="Registro password" onclick="pwShow('${u.uid}')">${PW[u.uid]?'🔐 Vedi':'🔐 —'}</button> `:'')+(u.role==='minus'&&isSup()?`<button class="b" onclick="admPerms('${u.uid}')">Permessi</button> `:'')+(can('elimina')?`<button class="x" title="Elimina" onclick="admDel('${u.uid}')">✕</button>`:'')}</td></tr>`}).join('');
 return`<div class="card"><b>Gestione ristoranti</b><div class="mu">Aggiungi clienti, monitora l'attività, abilita o disabilita l'accesso.${isSup()?'':' Sei un supervisore minus: vedi solo ciò che il supervisore ti ha concesso.'}</div></div>
 ${can('crea')?`<div class="card"><b>Aggiungi nuovo account</b>${isSup()?`<div class="row" style="margin-top:8px"><label>Tipo <select onchange="admF.role=this.value;R()"><option value="user" ${admF.role!=='minus'?'selected':''}>Ristorante</option><option value="minus" ${admF.role==='minus'?'selected':''}>Supervisore minus (collaboratore)</option></select></label></div>`:''}<div class="row" style="margin-top:8px"><label>Nome ${admF.role==='minus'?'collaboratore':'ristorante'} <input value="${esc(admF.nome)}" oninput="admF.nome=this.value"></label><label>Città <input value="${esc(admF.citta)}" oninput="admF.citta=this.value"></label></div>
 <div class="row"><label>Email (nome utente) <input type="email" autocapitalize="off" value="${esc(admF.email)}" oninput="admF.email=this.value"></label><label>Password <input value="${esc(admF.pw)}" oninput="admF.pw=this.value" placeholder="min. 8 caratteri"></label><button class="b" onclick="admF.pw=genPw();R()">Genera</button></div>
