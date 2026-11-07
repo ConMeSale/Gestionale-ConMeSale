@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Menù</title>
+<style>
+:root{--bg:#faf7f2;--fg:#1f1d1a;--mu:#6e6a63;--card:#fff;--bd:#e6dfd4;--ac:#9a3412;--ac2:#c2410c;--gold:#7a5c3e}
+@media (prefers-color-scheme:dark){:root{--bg:#161412;--fg:#ece7df;--mu:#a39d93;--card:#201d1a;--bd:#38332d;--ac:#fb923c;--ac2:#ea580c;--gold:#d6b48c}}
+*{box-sizing:border-box}html,body{margin:0}html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:640px;margin:0 auto;padding:0 16px}
+header{text-align:center;padding:30px 0 10px}.loc{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:var(--gold)}
+h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:32px;line-height:1.15;margin:6px 0 4px}.st{font-family:Georgia,serif;font-style:italic;color:var(--mu);margin:0}
+.bar{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--bd);padding:8px 0}
+.tabs,.nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}.tabs::-webkit-scrollbar,.nav::-webkit-scrollbar{display:none}
+.tabs button{flex:none;font:inherit;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--card);color:var(--fg);cursor:pointer}.tabs button[aria-selected=true]{background:var(--ac2);border-color:var(--ac2);color:#fff}
+.nav a{flex:none;font-size:14px;color:var(--mu);text-decoration:none;padding:6px 10px;border-radius:8px}.nav a:hover{background:var(--card);color:var(--fg)}
+.tabs+.nav{margin-top:6px}
+h2{font-family:Georgia,serif;font-weight:normal;font-size:22px;color:var(--gold);margin:28px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.it{padding:10px 0;border-bottom:1px dashed var(--bd)}.it:last-child{border-bottom:0}
+.ln{display:flex;gap:12px;align-items:baseline}.n{font-weight:650;flex:1}.p{font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}
+.d{color:var(--mu);font-size:14px;margin-top:2px}.al{display:inline-flex;gap:3px;margin-left:6px;vertical-align:2px}.al span{font-size:11px;font-weight:700;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--bd);color:var(--fg);display:inline-grid;place-items:center}
+.pd{text-align:center;color:var(--mu);font-style:italic;margin:26px 0 0}
+.lg{margin:26px 0 0;padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--bd);font-size:13px;color:var(--mu)}.lg b{color:var(--fg)}.lg ul{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 10px}.lg li{display:flex;gap:6px;align-items:center}
+.cta{margin:18px 0 0;padding:18px;border-radius:14px;background:var(--card);border:1px solid var(--bd);text-align:center}.cta a{display:block;margin-top:12px;padding:13px;border-radius:12px;background:var(--ac2);color:#fff;font-weight:700;text-decoration:none}
+footer{text-align:center;color:var(--mu);font-size:12px;padding:24px 0 40px}
+.msg{text-align:center;padding:60px 0}
+</style></head><body><div id="app"><p class="msg">Caricamento del menù…</p></div>
+<script>
+const SB={url:'https://mmdfkhdwlqinfsviaioi.supabase.co',key:'sb_publishable_QovI3h9zx8hxygxN9H8hqw_1ec05nw2'};
+const Q=new URLSearchParams(location.search),TOK=(Q.get('m')||'').replace(/[^a-z0-9]/gi,''),DEMO=Q.get('demo')==='1';
+const $=s=>document.querySelector(s),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur=v=>(+v||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+let M=null,cur=0;
+const DEMO_M={locale:'Pizzeria Da Gigi',alg:['Glutine','Crostacei','Uova','Pesce','Arachidi','Soia','Latte','Frutta a guscio','Sedano','Senape','Sesamo','Solfiti','Lupini','Molluschi'],menus:[{t:'Il nostro menù',sotto:'Pizzeria e cucina di casa',piede:'Coperto 2,00 €. Su richiesta impasto senza glutine.',sec:[
+ {t:'Antipasti',items:[{n:'Bruschetta al pomodoro',p:5,d:'Pane casereccio, pomodoro insalatario, basilico, aglio',a:[1]},{n:'Tagliere di salumi',p:12,d:'Prosciutto crudo, salame, grana, olive taggiasche, pane casereccio',a:[1,7]}]},
+ {t:'Pizze',items:[{n:'Margherita',p:5.5,d:'Pomodoro polpa, mozzarella fiordilatte, basilico',a:[1,7]},{n:'Diavola',p:7.5,d:'Pomodoro polpa, mozzarella fiordilatte, salamino piccante',a:[1,7]},{n:'Boscaiola',p:7,d:'Pomodoro polpa, mozzarella fiordilatte, funghi champignon trifolati',a:[1,7]}]},
+ {t:'Primi piatti',items:[{n:'Spaghetti alla carbonara',p:11,d:'Guanciale, uova, pecorino romano, pepe nero',a:[1,3,7]},{n:'Spaghetti allo scoglio',p:15,d:'Scampi, mazzancolle, vongole, cozze, prezzemolo',a:[1,2,14]}]},
+ {t:'Dessert',items:[{n:'Tiramisù',p:6,d:'Mascarpone, uova, savoiardi, caffè, cacao',a:[1,3,7]}]}]}],crm:null};
+function render(){const L=M.menus||[],m=L[cur]||L[0];document.title=(m?m.t+' · ':'')+(M.locale||'Menù');
+ const used=new Set();L.forEach(x=>x.sec.forEach(s=>s.items.forEach(i=>(i.a||[]).forEach(a=>used.add(a)))));
+ $('#app').innerHTML=`<div class="w"><header>${M.locale?`<div class="loc">${esc(M.locale)}</div>`:''}<h1>${esc(m.t)}</h1>${m.sotto?`<p class="st">${esc(m.sotto)}</p>`:''}${DEMO?'<p style="color:#b91c1c;font-size:13px;margin:8px 0 0">Menù di prova</p>':''}</header></div>
+ <div class="bar"><div class="w">${L.length>1?`<div class="tabs" role="tablist">${L.map((x,i)=>`<button role="tab" aria-selected="${i===cur}" data-i="${i}">${esc(x.t)}</button>`).join('')}</div>`:''}${m.sec.length>1?`<nav class="nav" aria-label="Sezioni">${m.sec.map((s,i)=>`<a href="#s${i}">${esc(s.t)}</a>`).join('')}</nav>`:''}</div></div>
+ <main class="w">${m.sec.map((s,i)=>`<h2 id="s${i}">${esc(s.t)}</h2>${s.items.map(it=>`<div class="it"><div class="ln"><span class="n">${esc(it.n)}${(it.a||[]).length?`<span class="al" aria-label="Allergeni: ${esc(it.a.map(a=>M.alg[a-1]).join(', '))}">${it.a.map(a=>`<span>${a}</span>`).join('')}</span>`:''}</span><span class="p">${it.p?eur(it.p):''}</span></div>${it.d?`<div class="d">${esc(it.d)}</div>`:''}</div>`).join('')}`).join('')}
+ ${m.piede?`<p class="pd">${esc(m.piede)}</p>`:''}
+ ${used.size?`<div class="lg"><b>Allergeni</b> · i numeri accanto ai piatti indicano gli allergeni presenti (Reg. UE 1169/2011). Per qualsiasi dubbio chiedi al personale.<ul>${[...used].sort((a,b)=>a-b).map(a=>`<li><span class="al" style="margin:0"><span>${a}</span></span>${esc(M.alg[a-1])}</li>`).join('')}</ul></div>`:''}
+ ${M.crm?`<div class="cta"><b>Ti è piaciuto?</b><div style="color:var(--mu);font-size:14px;margin-top:4px">Iscriviti alla newsletter per novità e offerte e lasciaci la tua opinione su Google.</div><a href="iscriviti.html?r=${encodeURIComponent(M.crm)}">Resta in contatto</a></div>`:''}</main>
+ <footer class="w">${M.pub_il?'Menù aggiornato il '+new Date(M.pub_il).toLocaleDateString('it-IT'):''}</footer>`;
+ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{cur=+b.dataset.i;render();scrollTo(0,0)})}
+function bad(t){$('#app').innerHTML=`<div class="w msg"><h1>Menù non disponibile</h1><p style="color:var(--mu)">${esc(t)}</p></div>`}
+(async()=>{if(DEMO){M=DEMO_M;return render()}
+ if(!TOK)return bad('Inquadra di nuovo il QR code del locale o chiedi il menù al personale.');
+ try{const r=await fetch(SB.url+'/rest/v1/rpc/menu_pub_get',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB.key},body:JSON.stringify({p_token:TOK})});if(!r.ok)throw 0;M=await r.json()}catch(e){return bad('Non riesco a caricare il menù: controlla la connessione e ricarica la pagina.')}
+ if(!M||!(M.menus||[]).length)return bad('Questo menù non è più online. Chiedi al personale.');render()})();
+</script></body></html>
