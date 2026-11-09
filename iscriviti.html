@@ -35,11 +35,12 @@ const okUrl=u=>/^https:\/\/[^\s"'<>]+$/.test(u||'');
 function informativa(){const t=INFO.titolare||INFO.nome,ind=INFO.indirizzo,em=INFO.email;
  return`<p><b>Titolare del trattamento:</b> ${esc(t)}${ind?', '+esc(ind):''}${em?' · '+esc(em):''}.</p>
  <p><b>Quali dati:</b> nome, email${INFO.tel_on!=='0'?', telefono':''}${INFO.compleanno_on!=='0'?', giorno e mese del compleanno':''}, che inserisci tu in questo modulo.</p>
- <p><b>Perché:</b> per registrarti tra i clienti del locale e, solo se lo scegli con l'apposita casella, per inviarti la newsletter con novità, eventi e offerte. Il consenso alla newsletter è facoltativo e puoi revocarlo quando vuoi, con il link «Cancellati dalla newsletter» in fondo a questa pagina o scrivendo al titolare.</p>
+ <p><b>Perché:</b> per registrarti tra i clienti del locale e, solo se lo scegli con le apposite caselle, per inviarti la newsletter via email e messaggi su WhatsApp con novità, eventi e offerte. I due consensi sono facoltativi e separati, e puoi revocarli quando vuoi: per la newsletter con il link «Cancellati dalla newsletter» in fondo a questa pagina, per WhatsApp rispondendo «STOP» a un messaggio, oppure scrivendo al titolare.</p>
  <p><b>Come e per quanto:</b> i dati sono conservati con strumenti informatici, non vengono venduti né ceduti a terzi per loro finalità e restano finché sei iscritto o finché non chiedi di cancellarli.</p>
  <p><b>I tuoi diritti:</b> puoi chiedere al titolare accesso, correzione o cancellazione dei dati, limitarne l'uso od opporti, e puoi presentare reclamo al Garante per la protezione dei dati personali.</p>`}
 function revCard(after){if(!okUrl(INFO.recensione))return'';
  return`<div class="c" style="text-align:center"><h2>${after?'Ti è piaciuto?':'Sei già stato da noi?'}</h2><div class="stars" aria-hidden="true">★★★★★</div><p class="mu" style="margin:0">Raccontalo su Google: la tua opinione, qualunque sia, ci aiuta a migliorare e aiuta altri clienti a sceglierci.</p><a class="btn" id="rev" href="${esc(INFO.recensione)}" target="_blank" rel="noopener">Lascia una recensione su Google</a></div>`}
+function waCard(){const n=String(INFO.whatsapp||'').replace(/\D/g,'');if(n.length<8)return'';return`<a class="btn sec" style="margin-top:14px" href="https://wa.me/${n}" target="_blank" rel="noopener">Scrivici su WhatsApp</a>`}
 function bindRev(){const a=$('#rev');if(a)a.addEventListener('click',()=>{if(REF&&!DEMO)rpc('crm_pub_click',{p_token:TOK,p_ref:REF}).catch(()=>{})})}
 function dd(){let d='<option value="">Giorno</option>';for(let i=1;i<=31;i++)d+=`<option value="${String(i).padStart(2,'0')}">${i}</option>`;const M=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];let m='<option value="">Mese</option>';M.forEach((x,i)=>m+=`<option value="${String(i+1).padStart(2,'0')}">${x}</option>`);return`<div class="two"><select id="cg" aria-label="Giorno">${d}</select><select id="cm" aria-label="Mese">${m}</select></div>`}
 function head(){return`<header><div class="ic" aria-hidden="true">${esc((INFO.nome||'?').trim().charAt(0).toUpperCase())}</div><h1>${esc(INFO.nome)}</h1><p>${esc(INFO.benvenuto||'Iscriviti per ricevere novità, serate speciali e offerte riservate ai clienti.')}</p>${DEMO?'<p class="err">Pagina di prova: i dati non vengono salvati.</p>':''}</header>`}
@@ -50,20 +51,22 @@ function show(){document.title=INFO.nome+' · Resta in contatto';
  ${INFO.tel_on!=='0'?'<label class="f" for="tl">Telefono <span>(facoltativo)</span></label><input type="tel" id="tl" autocomplete="tel" maxlength="40">':''}
  ${INFO.compleanno_on!=='0'?'<label class="f">Compleanno <span>(facoltativo: solo giorno e mese)</span></label>'+dd():''}
  <label class="ck"><input type="checkbox" id="nl"><span>Sì, voglio ricevere la <b>newsletter</b> con novità, eventi e offerte via email.</span></label>
+ ${INFO.tel_on!=='0'?'<label class="ck"><input type="checkbox" id="wa"><span>Sì, accetto di ricevere messaggi su <b>WhatsApp</b> al numero indicato (novità, auguri, offerte).</span></label>':''}
  <label class="ck"><input type="checkbox" id="pv" required><span>Ho letto l'<button type="button" class="lnk" id="ti">informativa privacy</button>.</span></label>
  <div class="inf hid" id="inf">${informativa()}</div>
  <div class="err" id="er" role="alert"></div><button type="submit" id="go">Iscriviti</button></form>
- ${revCard(false)}
+ ${revCard(false)}${waCard()}
  <footer><button type="button" class="lnk" id="un">Cancellati dalla newsletter</button></footer><div id="unb"></div>`;
  $('#ti').onclick=()=>$('#inf').classList.toggle('hid');$('#un').onclick=showUnsub;bindRev();
  $('#fm').onsubmit=async e=>{e.preventDefault();const er=$('#er'),go=$('#go');er.textContent='';
   const nome=$('#nm').value.trim(),email=$('#em').value.trim(),cg=$('#cg'),cm=$('#cm'),comp=cg&&cg.value&&cm.value?cm.value+'-'+cg.value:'';
   if(!nome){er.textContent=MSG.nome_obbligatorio;return $('#nm').focus()}if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){er.textContent=MSG.email_non_valida;return $('#em').focus()}
+  const wa=!!($('#wa')&&$('#wa').checked),tel=$('#tl')?$('#tl').value.trim():'';if(wa&&tel.replace(/\D/g,'').length<8){er.textContent='Per ricevere i messaggi su WhatsApp scrivi il tuo numero di telefono.';return $('#tl').focus()}
   if(!$('#pv').checked){er.textContent=MSG.privacy_obbligatoria;return}
   go.disabled=true;go.textContent='Invio…';
-  try{if(!DEMO){const r=await rpc('crm_pub_iscrivi',{p_token:TOK,p_nome:nome,p_email:email,p_tel:$('#tl')?$('#tl').value.trim():'',p_compleanno:comp,p_newsletter:$('#nl').checked,p_privacy:true});REF=(r&&r.ref)||''}
-   done(nome,$('#nl').checked)}catch(x){er.textContent=errMsg(x);go.disabled=false;go.textContent='Iscriviti'}}}
-function done(nome,nl){$('#app').innerHTML=head()+`<div class="c" style="text-align:center"><h2 class="okm">Grazie, ${esc(nome.split(' ')[0])}!</h2><p style="margin:6px 0 0">${nl?'Sei iscritto alla newsletter: ti scriveremo solo per cose che valgono la pena.':'Ti abbiamo registrato tra i nostri clienti.'}</p></div>${revCard(true)}<footer>Puoi chiudere questa pagina.</footer>`;bindRev();scrollTo(0,0)}
+  try{if(!DEMO){const r=await rpc('crm_pub_iscrivi',{p_token:TOK,p_nome:nome,p_email:email,p_tel:tel,p_compleanno:comp,p_newsletter:$('#nl').checked,p_privacy:true,p_whatsapp:wa});REF=(r&&r.ref)||''}
+   done(nome,$('#nl').checked,wa)}catch(x){er.textContent=errMsg(x);go.disabled=false;go.textContent='Iscriviti'}}}
+function done(nome,nl,wa){$('#app').innerHTML=head()+`<div class="c" style="text-align:center"><h2 class="okm">Grazie, ${esc(nome.split(' ')[0])}!</h2><p style="margin:6px 0 0">${nl||wa?'Sei iscritto'+(nl&&wa?' alla newsletter e ai messaggi WhatsApp':nl?' alla newsletter':' ai messaggi WhatsApp')+': ti scriveremo solo per cose che valgono la pena.':'Ti abbiamo registrato tra i nostri clienti.'}</p></div>${revCard(true)}${waCard()}<footer>Puoi chiudere questa pagina.</footer>`;bindRev();scrollTo(0,0)}
 function showUnsub(){$('#unb').innerHTML=`<form class="c" id="uf"><h2>Cancellati dalla newsletter</h2><p class="mu" style="margin:0">Scrivi l'email con cui ti sei iscritto: non riceverai più la newsletter.</p><label class="f" for="ue">Email</label><input type="email" id="ue" autocomplete="email" required><div class="err" id="uer" role="alert"></div><button type="submit" class="sec">Cancellami</button></form>`;$('#ue').focus();
  $('#uf').onsubmit=async e=>{e.preventDefault();const em=$('#ue').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){$('#uer').textContent=MSG.email_non_valida;return}
   try{if(!DEMO)await rpc('crm_pub_disiscrivi',{p_token:TOK,p_email:em});$('#uf').innerHTML='<p class="okm" style="margin:0">Fatto: non riceverai più la newsletter.</p>'}catch(x){$('#uer').textContent=errMsg(x)}}}
